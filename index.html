@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아티스트 레퍼런스 모음</title>
-    <!-- Tailwind CSS CDN 로드: 디자인과 반응형 레이아웃을 위해 사용합니다. -->
+    <title>레퍼런스 정리 사이트</title>
+    <!-- Tailwind CSS 및 Lucide Icons 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons 로드: 아이콘을 사용하기 위해 로드합니다. -->
     <script type="module" src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* 배경색 검은색, 글씨 흰색 설정 */
@@ -15,19 +14,31 @@
             color: #FFFFFF;
             font-family: 'Inter', sans-serif;
         }
-        /* 메인 컨테이너가 화면 중앙에 오도록 최대 너비를 설정합니다. */
         .container {
-            max-width: 1200px;
+            max-width: 1400px; /* 4열을 위해 최대 너비를 약간 늘립니다. */
         }
-        /* 이미지 플레이스홀더를 위한 스타일 */
         .img-placeholder {
-            padding-top: 56.25%; /* 16:9 비율 유지를 위한 패딩 */
+            padding-top: 56.25%; /* 16:9 비율 유지 */
             background-color: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.9rem;
             color: #888888;
+        }
+        /* 4열 그리드를 위해 데스크톱(lg)에서 4열로 설정합니다. */
+        .grid-4-cols {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        @media (min-width: 768px) {
+            .grid-4-cols {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .grid-4-cols {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
         }
     </style>
 </head>
@@ -37,116 +48,148 @@
         <!-- 1. 제목 영역 -->
         <header class="py-8 text-center">
             <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
-                아티스트 레퍼런스 모음
+                레퍼런스 정리 사이트
             </h1>
-            <p class="mt-2 text-lg text-gray-400">3D, 모션그래픽, 미디어 아트 작업물 큐레이션</p>
+            <p class="mt-2 text-lg text-gray-400">나만의 아티스트 작업물 큐레이션</p>
         </header>
 
-        <!-- 2. 검색창 영역 (상단 중앙에 크게 배치) -->
+        <!-- 2. 검색창 영역 (Google 검색 연동) -->
         <section class="mb-12 flex justify-center">
-            <div class="w-full max-w-2xl">
+            <form action="https://www.google.com/search" method="get" target="_blank" class="w-full max-w-3xl">
                 <div class="relative">
-                    <input type="text" placeholder="작업물 제목이나 아티스트를 검색해보세요..."
+                    <input type="text" name="q" placeholder="구글에서 레퍼런스를 바로 검색해보세요 (예: 3D motion graphics)"
                            class="w-full p-4 pl-12 bg-gray-800 text-white rounded-xl border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150 shadow-lg"
-                           onfocus="this.placeholder='검색 기능은 개발 중입니다!'"
-                           onblur="this.placeholder='작업물 제목이나 아티스트를 검색해보세요...'"
-                           aria-label="검색창">
-                    <!-- 돋보기 아이콘 -->
-                    <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+                           aria-label="Google 검색창">
+                    <button type="submit" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400">
+                        <i data-lucide="search"></i>
+                    </button>
                 </div>
-            </div>
+            </form>
         </section>
 
-        <!-- 3. 메인 영역 (3열 그리드 형식) -->
-        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 3. 메인 영역 (4열 그리드 형식) -->
+        <!-- grid-4-cols 클래스를 적용하여 4열로 변경 -->
+        <main class="grid grid-4-cols gap-4 sm:gap-6">
 
-            <!-- 예시 링크 1: Behance 레퍼런스 -->
-            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
+            <!-- 예시 링크 1: Behance -->
+            <a href="https://www.behance.net" target="_blank" class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
                 <div class="relative">
-                    <!-- 썸네일 플레이스홀더 (16:9 비율) -->
                     <div class="img-placeholder rounded-t-xl">
-                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 썸네일 플레이스홀더
+                        <!-- 썸네일 텍스트도 간결하게 수정 -->
+                        <i data-lucide="zap" class="h-6 w-6 mr-2"></i> Behance
                     </div>
                 </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold mb-2 truncate" title="미래 도시 렌더링 - 3D 모션">미래 도시 렌더링 - 3D 모션</h2>
-                    <!-- Behance 로고 아이콘 -->
-                    <div class="flex items-center text-sm text-gray-400">
-                        <!-- Behance 아이콘 (lucide icons에서 임시로 'zap' 사용) -->
-                        <i data-lucide="zap" class="h-4 w-4 mr-1 text-indigo-400 fill-indigo-400"></i>
-                        <span class="font-medium text-indigo-400">Behance Reference</span>
+                <div class="p-3">
+                    <!-- 예시 작업, Reference 영문 문구 제거 -->
+                    <h2 class="text-base font-semibold truncate" title="Behance 작업물 제목">Behance 작업물 제목</h2>
+                    <div class="flex items-center text-xs text-gray-400 mt-1">
+                        <i data-lucide="zap" class="h-3 w-3 mr-1 text-indigo-400 fill-indigo-400"></i>
+                        <span class="font-medium text-indigo-400">Behance</span>
                     </div>
+                </div>
+            </a>
+
+            <!-- 예시 링크 2: Vimeo -->
+            <a href="https://www.vimeo.com" target="_blank" class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl">
+                        <i data-lucide="circle-play" class="h-6 w-6 mr-2"></i> Vimeo
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate" title="Vimeo 작업물 제목">Vimeo 작업물 제목</h2>
+                    <div class="flex items-center text-xs text-gray-400 mt-1">
+                        <i data-lucide="circle-play" class="h-3 w-3 mr-1 text-sky-400 fill-sky-400"></i>
+                        <span class="font-medium text-sky-400">Vimeo</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 예시 링크 3: YouTube -->
+            <a href="https://www.youtube.com" target="_blank" class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl">
+                        <i data-lucide="youtube" class="h-6 w-6 mr-2"></i> YouTube
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate" title="YouTube 작업물 제목">YouTube 작업물 제목</h2>
+                    <div class="flex items-center text-xs text-gray-400 mt-1">
+                        <i data-lucide="youtube" class="h-3 w-3 mr-1 text-red-500 fill-red-500"></i>
+                        <span class="font-medium text-red-500">YouTube</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 예시 링크 4: Instagram -->
+            <a href="https://www.instagram.com" target="_blank" class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl">
+                        <i data-lucide="instagram" class="h-6 w-6 mr-2"></i> Instagram
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate" title="Instagram 작업물 제목">Instagram 작업물 제목</h2>
+                    <div class="flex items-center text-xs text-gray-400 mt-1">
+                        <i data-lucide="instagram" class="h-3 w-3 mr-1 text-fuchsia-500 fill-fuchsia-500"></i>
+                        <span class="font-medium text-fuchsia-500">Instagram</span>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- 플레이스홀더 4개 추가 -->
+            <div class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl text-gray-500">
+                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 추가 항목
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate text-gray-600">추가할 링크를 넣어주세요</h2>
+                </div>
+            </div>
+            <div class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl text-gray-500">
+                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 추가 항목
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate text-gray-600">추가할 링크를 넣어주세요</h2>
+                </div>
+            </div>
+            <div class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl text-gray-500">
+                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 추가 항목
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate text-gray-600">추가할 링크를 넣어주세요</h2>
+                </div>
+            </div>
+            <div class="block bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                <div class="relative">
+                    <div class="img-placeholder rounded-t-xl text-gray-500">
+                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 추가 항목
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h2 class="text-base font-semibold truncate text-gray-600">추가할 링크를 넣어주세요</h2>
                 </div>
             </div>
 
-            <!-- 예시 링크 2: Vimeo 레퍼런스 -->
-            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="relative">
-                    <div class="img-placeholder rounded-t-xl">
-                        <i data-lucide="video" class="h-6 w-6 mr-2"></i> 썸네일 플레이스홀더
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold mb-2 truncate" title="미디어 아트 전시 기록">미디어 아트 전시 기록</h2>
-                    <!-- Vimeo 아이콘 -->
-                    <div class="flex items-center text-sm text-gray-400">
-                        <i data-lucide="circle-play" class="h-4 w-4 mr-1 text-sky-400 fill-sky-400"></i>
-                        <span class="font-medium text-sky-400">Vimeo Reference</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 예시 링크 3: YouTube 레퍼런스 -->
-            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="relative">
-                    <div class="img-placeholder rounded-t-xl">
-                        <i data-lucide="youtube" class="h-6 w-6 mr-2"></i> 썸네일 플레이스홀더
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold mb-2 truncate" title="파티클 시뮬레이션 튜토리얼">파티클 시뮬레이션 튜토리얼</h2>
-                    <!-- YouTube 아이콘 -->
-                    <div class="flex items-center text-sm text-gray-400">
-                        <i data-lucide="youtube" class="h-4 w-4 mr-1 text-red-500 fill-red-500"></i>
-                        <span class="font-medium text-red-500">YouTube Reference</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 추가 플레이스홀더 3개 -->
-            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="relative">
-                    <div class="img-placeholder rounded-t-xl">
-                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 썸네일
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold mb-2 text-gray-500">새 작업물 추가 (1)</h2>
-                </div>
-            </div>
-            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="relative">
-                    <div class="img-placeholder rounded-t-xl">
-                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 썸네일
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold mb-2 text-gray-500">새 작업물 추가 (2)</h2>
-                </div>
-            </div>
-            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="relative">
-                    <div class="img-placeholder rounded-t-xl">
-                        <i data-lucide="image" class="h-6 w-6 mr-2"></i> 썸네일
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold mb-2 text-gray-500">새 작업물 추가 (3)</h2>
-                </div>
-            </div>
 
         </main>
     </div>
+
+    <script>
+        // 검색창에서 Enter 키를 눌러도 구글 검색이 작동하도록 보장합니다.
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // Google 검색은 form action으로 이미 처리됩니다.
+            // 추가적인 JavaScript 처리는 필요 없지만, 필요하다면 여기에 추가할 수 있습니다.
+        });
+    </script>
 
 </body>
 </html>
