@@ -3,100 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>레퍼런스 정리 사이트 - Panda Universe</title>
-    <meta name="description" content="3D 모션그래픽 아티스트를 위한 큐레이션 레퍼런스 사이트">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Panda Universe - 레퍼런스 큐레이션</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        body { background: linear-gradient(-45deg, #000000, #0a0a1a, #1a0a2e, #0f0f23); background-size: 400% 400%; animation: gradient 15s ease infinite; color: #FFFFFF; font-family: 'Pretendard', 'Malgun Gothic', sans-serif; }
-        .container { max-width: 1400px; }
-        .ratio-4-to-1 { padding-top: 25%; position: relative; background-color: #1a1a1a; border-radius: 0.5rem; height: 0; overflow: hidden; }
-        .grid-responsive { grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1rem; }
-        @media (min-width: 640px) { .grid-responsive { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (min-width: 1024px) { .grid-responsive { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-        .item-content { display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; padding: 0 15px; text-align: center; word-wrap: break-word; overflow-wrap: break-word; z-index: 5; }
-        .item-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        @media (min-width: 640px) { .item-icon { font-size: 3rem; } }
-        @media (min-width: 1024px) { .item-icon { font-size: 3.5rem; } }
-        .item-content .item-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; line-height: 1.2; }
-        .item-content .item-desc { font-size: 0.7rem; font-weight: 500; color: #9ca3af; line-height: 1.3; }
-        @media (min-width: 640px) { .item-content .item-name { font-size: 1.1rem; } .item-content .item-desc { font-size: 0.8rem; } }
-        @media (min-width: 1024px) { .item-content .item-name { font-size: 1.25rem; } .item-content .item-desc { font-size: 0.875rem; } }
-        .main-title { font-size: 2rem; }
-        @media (min-width: 640px) { .main-title { font-size: 2.5rem; } }
-        @media (min-width: 1024px) { .main-title { font-size: 3rem; } }
-        .category-header { font-size: 1.25rem; }
-        @media (min-width: 640px) { .category-header { font-size: 1.5rem; } }
-        @media (min-width: 1024px) { .category-header { font-size: 1.875rem; } }
-        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
-        .link-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .link-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4); }
-        .featured-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); position: relative; overflow: hidden; }
-        .featured-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent); transform: rotate(45deg); animation: shine 3s infinite; }
-        @keyframes shine { 0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); } 100% { transform: translateX(100%) translateY(100%) rotate(45deg); } }
-        .stat-number { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .skeleton { background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
-        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* Category Section */
+        .category-section {
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .category-title {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Links Grid */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* Link Card */
+        .link-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--card-color, #667eea);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .link-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .link-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .link-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--card-color, #667eea);
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover .link-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .link-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--card-color, #667eea);
+        }
+
+        .link-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            padding: 50px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            header p {
+                font-size: 0.95rem;
+            }
+
+            .category-title {
+                font-size: 1.4rem;
+            }
+
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .link-icon {
+                font-size: 1.8rem;
+            }
+
+            .link-name {
+                font-size: 1.2rem;
+            }
+
+            .link-description {
+                font-size: 0.85rem;
+            }
+
+            .stats {
+                gap: 15px;
+            }
+
+            .stat-number {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .links-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .link-icon {
+                font-size: 2rem;
+            }
+
+            .link-name {
+                font-size: 1.35rem;
+            }
+
+            .link-description {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .links-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen p-4 sm:p-6 lg:p-8">
-    <div class="container mx-auto">
-        <header class="py-6 sm:py-8 text-center fade-in">
-            <div class="mb-2"><span class="text-sm text-indigo-400 font-semibold tracking-wider">CURATED BY</span></div>
-            <h1 class="main-title font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Panda Universe</h1>
-            <h2 class="text-xl sm:text-2xl font-bold mt-2 text-gray-300">레퍼런스 정리 사이트</h2>
-            <p class="mt-3 text-base sm:text-lg text-gray-400">3D 모션그래픽 아티스트를 위한 큐레이션 레퍼런스</p>
-            <div class="flex justify-center gap-8 mt-6" id="stats">
-                <div class="text-center"><div class="stat-number" id="total-sites">--</div><div class="text-xs text-gray-500 uppercase tracking-wider">Total Sites</div></div>
-                <div class="text-center"><div class="stat-number" id="total-categories">4</div><div class="text-xs text-gray-500 uppercase tracking-wider">Categories</div></div>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐼 Panda Universe</h1>
+            <p>3D Motion Graphics & Media Art 레퍼런스 큐레이션</p>
+            <p class="subtitle">Cinema 4D, Unreal Engine, AI Tools로 창작하는 크리에이터의 필수 링크 모음</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalLinks">0</span>
+                    <span class="stat-label">큐레이션 사이트</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">카테고리</span>
+                </div>
             </div>
         </header>
-        <section class="mb-6 flex justify-center fade-in" style="animation-delay: 0.2s;">
-            <div class="w-full max-w-3xl"><div class="relative"><input type="text" id="search-input" placeholder="검색어 입력 (예: 3D motion graphics)" class="w-full p-3 sm:p-4 bg-gray-800/50 backdrop-blur-sm text-white rounded-xl border border-gray-700/50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition duration-150 shadow-lg text-sm sm:text-base"></div></div>
-        </section>
-        <section class="mb-8 sm:mb-12 flex justify-center fade-in" style="animation-delay: 0.3s;">
-            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-3xl">
-                <button class="filter-btn bg-gray-800/50 backdrop-blur-sm text-gray-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-indigo-600 hover:text-white transition-all duration-200 hover:scale-105">3D</button>
-                <button class="filter-btn bg-gray-800/50 backdrop-blur-sm text-gray-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-indigo-600 hover:text-white transition-all duration-200 hover:scale-105">Motion</button>
-                <button class="filter-btn bg-gray-800/50 backdrop-blur-sm text-gray-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-indigo-600 hover:text-white transition-all duration-200 hover:scale-105">Media Art</button>
-                <button class="filter-btn bg-gray-800/50 backdrop-blur-sm text-gray-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-indigo-600 hover:text-white transition-all duration-200 hover:scale-105">VFX</button>
-            </div>
-        </section>
-        <div id="featured-container"></div>
-        <div id="links-container">
-            <div class="grid grid-responsive mb-8">
-                <div class="skeleton rounded-lg" style="height: 150px;"></div>
-                <div class="skeleton rounded-lg" style="height: 150px;"></div>
-                <div class="skeleton rounded-lg" style="height: 150px;"></div>
-                <div class="skeleton rounded-lg" style="height: 150px;"></div>
-            </div>
+
+        <div id="content">
+            <div class="loading">로딩 중...</div>
         </div>
-        <footer class="mt-16 pt-8 border-t border-gray-800 text-center fade-in" style="animation-delay: 0.5s;">
-            <div class="mb-6">
-                <p class="text-gray-400 text-sm mb-2">🎨 3D Motion Graphics Artist & Media Art Creator</p>
-                <p class="text-gray-500 text-xs">Built with Firebase + GitHub Pages | Auto-updated daily</p>
+
+        <footer>
+            <p><strong>Panda Universe</strong> - 이덕준</p>
+            <p style="margin-top: 10px; opacity: 0.9;">3D 모션그래픽 & 미디어 아트 크리에이터</p>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
+                    <i class="fab fa-youtube"></i> YouTube
+                </a>
+                <a href="https://www.behance.net/led32684792a3" target="_blank" class="social-link">
+                    <i class="fab fa-behance"></i> Behance
+                </a>
+                <a href="https://github.com/leedeokjun-sudo" target="_blank" class="social-link">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
-            <div class="flex justify-center gap-6 mb-6">
-                <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="text-gray-400 hover:text-red-500 transition-colors" title="YouTube Channel"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
-                <a href="https://www.behance.net/led32684792a3" target="_blank" class="text-gray-400 hover:text-blue-500 transition-colors" title="Behance Portfolio"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg></a>
-            </div>
-            <p class="text-gray-600 text-xs">© 2025 Panda Universe (이덕준). All rights reserved.</p>
+            <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9rem;">
+                © 2024 Panda Universe. All rights reserved.
+            </p>
         </footer>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-        const firebaseConfig = { apiKey: "AIzaSyDzPalx0dYavQNN12N9IXAElO9sMZRT3Hk", authDomain: "artist-reference-2025-a0ed1.firebaseapp.com", projectId: "artist-reference-2025-a0ed1", storageBucket: "artist-reference-2025-a0ed1.firebasestorage.app", messagingSenderId: "478548583901", appId: "1:478548583901:web:21f3e6462bd3fc7ce7c234" };
-        const iconMap = { 'CHATGPT': '<i class="fa-solid fa-comment-dots"></i>', 'GEMINI': '<i class="fa-brands fa-google"></i>', 'FIREFLY': '<i class="fa-brands fa-adobe"></i>', 'YOUTUBE': '<i class="fa-brands fa-youtube"></i>', 'VIMEO': '<i class="fa-brands fa-vimeo-v"></i>', 'ARTSTATION': '<i class="fa-brands fa-artstation"></i>', 'DRIBBBLE': '<i class="fa-brands fa-dribbble"></i>', 'BEHANCE': '<i class="fa-brands fa-behance"></i>', 'PINTEREST': '<i class="fa-brands fa-pinterest"></i>', 'AWWWARDS': '<i class="fa-solid fa-award"></i>' };
-        let db; const linksContainer = document.getElementById('links-container'); const featuredContainer = document.getElementById('featured-container');
-        try { const app = initializeApp(firebaseConfig); db = getFirestore(app); } catch (e) { console.error("❌ Firebase 초기화 실패:", e); linksContainer.innerHTML = `<div class="text-center text-red-500 py-16">🚨 Firebase 초기화 실패</div>`; }
-        function createCardHTML(link, isFeatured = false) { const colorClass = link.color || 'text-white'; const siteName = (link.name || '').toUpperCase(); const hasIcon = iconMap[siteName]; if (hasIcon) { return `<div class="item-content ${colorClass}"><div class="item-icon">${iconMap[siteName]}</div><span class="item-name whitespace-normal">${isFeatured ? '⭐ ' : ''}${link.name || '이름 없음'}</span><span class="item-desc whitespace-normal">${link.description || ''}</span></div>`; } else { return `<div class="item-content ${colorClass}"><span class="item-name whitespace-normal" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${isFeatured ? '⭐ ' : ''}${link.name || '이름 없음'}</span><span class="item-desc whitespace-normal">${link.description || ''}</span></div>`; } }
-        async function loadLinks() { if (!db) return; try { const querySnapshot = await getDocs(collection(db, "links")); if (querySnapshot.empty) { linksContainer.innerHTML = '<div class="text-center text-yellow-500 py-16">⚠️ 데이터가 없습니다</div>'; return; } document.getElementById('total-sites').textContent = querySnapshot.size; linksContainer.innerHTML = ''; featuredContainer.innerHTML = ''; const grouped = {}; const allLinks = []; querySnapshot.forEach((doc) => { const data = doc.data(); const category = data.category || '기타'; if (!grouped[category]) grouped[category] = []; grouped[category].push({ id: doc.id, ...data }); allLinks.push({ id: doc.id, ...data }); }); const shuffled = allLinks.sort(() => 0.5 - Math.random()); const featured = shuffled.slice(0, 3); if (featured.length > 0) { const featuredSection = document.createElement('div'); featuredSection.className = 'mb-12 fade-in'; featuredSection.style.animationDelay = '0.4s'; featuredSection.innerHTML = `<h2 class="text-2xl font-bold mb-4 text-center tracking-wider"><span class="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">✨ 이번 주 추천</span></h2>`; const featuredGrid = document.createElement('div'); featuredGrid.className = 'grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'; featured.forEach((link, index) => { const a = document.createElement('a'); a.href = link.url || '#'; a.target = '_blank'; a.className = 'block featured-card rounded-lg overflow-hidden shadow-2xl transition-all duration-300 hover:scale-105 fade-in-up'; a.style.animationDelay = `${0.5 + index * 0.1}s`; a.innerHTML = `<div class="ratio-4-to-1">${createCardHTML(link, true)}</div>`; featuredGrid.appendChild(a); }); featuredSection.appendChild(featuredGrid); featuredContainer.appendChild(featuredSection); } const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO']; let cardIndex = 0; categoryOrder.forEach(category => { if (!grouped[category]) return; const header = document.createElement('h2'); header.className = 'category-header font-bold mb-3 sm:mb-4 mt-6 sm:mt-8 tracking-wider text-gray-300 border-b border-gray-700/50 pb-2 fade-in-up'; header.style.animationDelay = `${0.6 + cardIndex * 0.05}s`; header.innerHTML = `${category} <span class="text-sm text-gray-500">(${grouped[category].length})</span>`; linksContainer.appendChild(header); const grid = document.createElement('div'); grid.className = 'grid grid-responsive mb-8 sm:mb-12'; grouped[category].forEach((link) => { const a = document.createElement('a'); a.href = link.url || '#'; a.target = '_blank'; a.className = 'link-card block bg-gray-900/50 backdrop-blur-sm rounded-lg overflow-hidden shadow-2xl fade-in-up'; a.style.animationDelay = `${0.7 + cardIndex * 0.05}s`; a.innerHTML = `<div class="ratio-4-to-1">${createCardHTML(link)}</div>`; grid.appendChild(a); cardIndex++; }); linksContainer.appendChild(grid); }); } catch (e) { console.error("❌ 로딩 중 오류:", e); linksContainer.innerHTML = `<div class="text-center text-red-500 py-16">🚨 데이터 로딩 실패</div>`; } }
-        if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', loadLinks); } else { loadLinks(); }
+
+    <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFSYCKpykp30NE3UOPb4-wDUqHpC5gd6I",
+            authDomain: "link-site-7ac5b.firebaseapp.com",
+            projectId: "link-site-7ac5b",
+            storageBucket: "link-site-7ac5b.firebasestorage.app",
+            messagingSenderId: "1055991485663",
+            appId: "1:1055991485663:web:4fe5c9e15e35fbd2771da7"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 아이콘 매핑
+        const iconMap = {
+            'ChatGPT': 'fa-solid fa-robot',
+            'Claude': 'fa-solid fa-brain',
+            'Sora': 'fa-solid fa-wand-magic-sparkles',
+            'Midjourney': 'fa-solid fa-palette',
+            'Pika': 'fa-solid fa-video',
+            'YouTube': 'fa-brands fa-youtube',
+            'Vimeo': 'fa-brands fa-vimeo-v',
+            'Behance': 'fa-brands fa-behance',
+            'Dribbble': 'fa-brands fa-dribbble',
+            'Awwwards': 'fa-solid fa-award'
+        };
+
+        // 카테고리별로 링크 로드
+        async function loadLinks() {
+            try {
+                const linksSnapshot = await db.collection('links').orderBy('rank_order').get();
+                const linksByCategory = {};
+                let totalCount = 0;
+
+                linksSnapshot.forEach(doc => {
+                    const link = doc.data();
+                    if (!linksByCategory[link.category]) {
+                        linksByCategory[link.category] = [];
+                    }
+                    linksByCategory[link.category].push(link);
+                    totalCount++;
+                });
+
+                // 총 링크 수 업데이트
+                document.getElementById('totalLinks').textContent = totalCount;
+
+                // 카테고리별로 표시
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = '';
+
+                // 카테고리 순서 정의
+                const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
+
+                categoryOrder.forEach((category, categoryIndex) => {
+                    if (linksByCategory[category]) {
+                        const section = document.createElement('div');
+                        section.className = 'category-section';
+                        section.style.animationDelay = `${categoryIndex * 0.1}s`;
+                        
+                        const title = document.createElement('h2');
+                        title.className = 'category-title';
+                        title.textContent = category;
+                        section.appendChild(title);
+
+                        const grid = document.createElement('div');
+                        grid.className = 'links-grid';
+
+                        linksByCategory[category].forEach((link, index) => {
+                            const card = createLinkCard(link, index);
+                            grid.appendChild(card);
+                        });
+
+                        section.appendChild(grid);
+                        contentDiv.appendChild(section);
+                    }
+                });
+            } catch (error) {
+                console.error('링크 로드 오류:', error);
+                document.getElementById('content').innerHTML = 
+                    '<div class="loading">데이터를 불러오는 중 오류가 발생했습니다.</div>';
+            }
+        }
+
+        // 링크 카드 생성
+        function createLinkCard(link, index) {
+            const card = document.createElement('a');
+            card.href = link.url;
+            card.target = '_blank';
+            card.className = 'link-card';
+            card.style.setProperty('--card-color', link.color || '#667eea');
+            card.style.animationDelay = `${index * 0.05}s`;
+
+            // 아이콘 추가
+            const icon = document.createElement('i');
+            const iconClass = iconMap[link.name] || 'fa-solid fa-link';
+            icon.className = `link-icon ${iconClass}`;
+            card.appendChild(icon);
+
+            const name = document.createElement('div');
+            name.className = 'link-name';
+            name.textContent = link.name;
+            card.appendChild(name);
+
+            const description = document.createElement('div');
+            description.className = 'link-description';
+            description.textContent = link.description;
+            card.appendChild(description);
+
+            return card;
+        }
+
+        // 페이지 로드 시 실행
+        loadLinks();
     </script>
 </body>
 </html>
