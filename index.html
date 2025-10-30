@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panda Universe - 레퍼런스 큐레이션</title>
     
-    <!-- Firebase -->
+    <!-- Firebase SDK 9.22.0 -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Font Awesome - jsdelivr CDN으로 변경 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     
     <style>
         * {
@@ -31,7 +28,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         header {
             text-align: center;
             color: white;
@@ -60,7 +56,6 @@
             opacity: 0.8;
         }
 
-        /* Stats */
         .stats {
             display: flex;
             justify-content: center;
@@ -88,7 +83,6 @@
             margin-top: 4px;
         }
 
-        /* Category Section */
         .category-section {
             margin-bottom: 50px;
             animation: fadeInUp 0.6s ease-out;
@@ -104,14 +98,12 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
-        /* Links Grid */
         .links-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
 
-        /* Link Card */
         .link-card {
             background: white;
             border-radius: 15px;
@@ -150,14 +142,12 @@
         .link-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: var(--card-color, #667eea);
             transition: all 0.3s ease;
-            display: inline-block;
-            line-height: 1;
+            display: block;
         }
 
         .link-card:hover .link-icon {
-            transform: scale(1.1) rotate(5deg);
+            transform: scale(1.15);
         }
 
         .link-name {
@@ -173,7 +163,6 @@
             line-height: 1.6;
         }
 
-        /* Footer */
         footer {
             text-align: center;
             color: white;
@@ -204,6 +193,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 1.1rem;
         }
 
         .social-link:hover {
@@ -211,11 +201,23 @@
             transform: translateY(-3px);
         }
 
-        .social-link i {
-            font-size: 1.2rem;
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            padding: 50px;
         }
 
-        /* Animations */
+        .error-box {
+            background: rgba(255, 100, 100, 0.3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+            border: 2px solid rgba(255, 100, 100, 0.6);
+        }
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -238,75 +240,22 @@
             }
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.5rem;
-            padding: 50px;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            header p {
-                font-size: 0.95rem;
-            }
-
-            .category-title {
-                font-size: 1.4rem;
-            }
-
-            .links-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .link-icon {
-                font-size: 1.8rem;
-            }
-
-            .link-name {
-                font-size: 1.2rem;
-            }
-
-            .link-description {
-                font-size: 0.85rem;
-            }
-
-            .stats {
-                gap: 15px;
-            }
-
-            .stat-number {
-                font-size: 1.4rem;
-            }
+            header h1 { font-size: 1.8rem; }
+            .links-grid { grid-template-columns: 1fr; }
+            .link-icon { font-size: 1.8rem; }
+            .link-name { font-size: 1.2rem; }
+            .link-description { font-size: 0.85rem; }
         }
 
         @media (min-width: 769px) and (max-width: 1024px) {
-            .links-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .link-icon {
-                font-size: 2rem;
-            }
-
-            .link-name {
-                font-size: 1.35rem;
-            }
-
-            .link-description {
-                font-size: 0.9rem;
-            }
+            .links-grid { grid-template-columns: repeat(2, 1fr); }
+            .link-icon { font-size: 2rem; }
+            .link-name { font-size: 1.35rem; }
         }
 
         @media (min-width: 1025px) {
-            .links-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+            .links-grid { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
@@ -329,8 +278,9 @@
             </div>
         </header>
 
+        <div id="errorDisplay"></div>
         <div id="content">
-            <div class="loading">로딩 중...</div>
+            <div class="loading">🔄 데이터 로딩 중...</div>
         </div>
 
         <footer>
@@ -338,13 +288,13 @@
             <p style="margin-top: 10px; opacity: 0.9;">3D 모션그래픽 & 미디어 아트 크리에이터</p>
             <div class="social-links">
                 <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
-                    <i class="fa-brands fa-youtube"></i> YouTube
+                    🎥 YouTube
                 </a>
                 <a href="https://www.behance.net/led32684792a3" target="_blank" class="social-link">
-                    <i class="fa-brands fa-behance"></i> Behance
+                    🎨 Behance
                 </a>
                 <a href="https://github.com/leedeokjun-sudo" target="_blank" class="social-link">
-                    <i class="fa-brands fa-github"></i> GitHub
+                    💻 GitHub
                 </a>
             </div>
             <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9rem;">
@@ -354,7 +304,7 @@
     </div>
 
     <script>
-        // Firebase 설정
+        // Firebase 설정 - Firebase Console에서 정확한 설정 확인 필요
         const firebaseConfig = {
             apiKey: "AIzaSyDFSYCKpykp30NE3UOPb4-wDUqHpC5gd6I",
             authDomain: "link-site-7ac5b.firebaseapp.com",
@@ -364,65 +314,118 @@
             appId: "1:1055991485663:web:4fe5c9e15e35fbd2771da7"
         };
 
+        // 에러 표시
+        function showError(title, error) {
+            const errorDiv = document.getElementById('errorDisplay');
+            errorDiv.innerHTML = `
+                <div class="error-box">
+                    <h3>⚠️ ${title}</h3>
+                    <p><strong>메시지:</strong> ${error.message || error}</p>
+                    <p><strong>코드:</strong> ${error.code || 'N/A'}</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">
+                        F12 개발자 도구의 Console 탭에서 자세한 정보를 확인하세요.
+                    </p>
+                </div>
+            `;
+        }
+
         // Firebase 초기화
-        firebase.initializeApp(firebaseConfig);
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            console.log('✅ Firebase 초기화 성공');
+        } catch (error) {
+            console.error('❌ Firebase 초기화 실패:', error);
+            showError('Firebase 초기화 실패', error);
+        }
+
         const db = firebase.firestore();
 
-        // 아이콘 매핑
-        const iconMap = {
-            'ChatGPT': 'fa-solid fa-robot',
-            'Claude': 'fa-solid fa-brain',
-            'Sora': 'fa-solid fa-wand-magic-sparkles',
-            'Midjourney': 'fa-solid fa-palette',
-            'Pika': 'fa-solid fa-video',
-            'Runway': 'fa-solid fa-film',
-            'LinkedIn': 'fa-brands fa-linkedin',
-            'JobKorea': 'fa-solid fa-briefcase',
-            'Wanted': 'fa-solid fa-user-tie',
-            'Saramin': 'fa-solid fa-building',
-            'YouTube': 'fa-brands fa-youtube',
-            'Vimeo': 'fa-brands fa-vimeo-v',
-            'Behance': 'fa-brands fa-behance',
-            'Dribbble': 'fa-brands fa-dribbble',
-            'Awwwards': 'fa-solid fa-award',
-            'Pinterest': 'fa-brands fa-pinterest'
+        // 이모지 아이콘
+        const emojiMap = {
+            'ChatGPT': '🤖',
+            'Claude': '🧠',
+            'Sora': '✨',
+            'Midjourney': '🎨',
+            'Pika': '📹',
+            'Runway': '🎬',
+            'LinkedIn': '💼',
+            'JobKorea': '👔',
+            'Wanted': '🎯',
+            'Saramin': '🏢',
+            'YouTube': '🎥',
+            'Vimeo': '📺',
+            'Behance': '🎨',
+            'Dribbble': '🏀',
+            'Awwwards': '🏆',
+            'Pinterest': '📌'
         };
 
-        // 카테고리별로 링크 로드
+        // 색상 기본값 매핑
+        const colorMap = {
+            'ChatGPT': '#10A37F',
+            'Claude': '#CC9B7A',
+            'Sora': '#FF6B6B',
+            'Midjourney': '#4F46E5',
+            'Pika': '#8B5CF6',
+            'Runway': '#00DDB3',
+            'LinkedIn': '#0A66C2',
+            'JobKorea': '#4A90E2',
+            'Wanted': '#3366FF',
+            'Saramin': '#0072BC',
+            'YouTube': '#FF0000',
+            'Vimeo': '#1AB7EA',
+            'Behance': '#1769FF',
+            'Dribbble': '#EA4C89',
+            'Awwwards': '#FACC15',
+            'Pinterest': '#E60023'
+        };
+
         async function loadLinks() {
             try {
-                console.log('Firebase 연결 시작...');
-                const linksSnapshot = await db.collection('links').orderBy('rank_order').get();
-                console.log('데이터 개수:', linksSnapshot.size);
+                console.log('🔍 Firestore 연결 테스트 시작...');
+                
+                const snapshot = await db.collection('links').orderBy('rank_order').get();
+                
+                if (snapshot.empty) {
+                    throw new Error('links 컬렉션이 비어 있습니다.');
+                }
+                
+                console.log(`✅ ${snapshot.size}개 문서 로드 성공`);
                 
                 const linksByCategory = {};
                 let totalCount = 0;
 
-                linksSnapshot.forEach(doc => {
+                snapshot.forEach(doc => {
                     const link = doc.data();
-                    console.log('링크 데이터:', link);
-                    if (!linksByCategory[link.category]) {
-                        linksByCategory[link.category] = [];
+                    const category = link.category || 'UNCATEGORIZED';
+                    
+                    if (!linksByCategory[category]) {
+                        linksByCategory[category] = [];
                     }
-                    linksByCategory[link.category].push(link);
+                    
+                    // 색상 처리: Tailwind 클래스면 hex로 변환
+                    if (link.color && link.color.startsWith('text-')) {
+                        link.color = colorMap[link.name] || '#667eea';
+                    }
+                    
+                    linksByCategory[category].push(link);
                     totalCount++;
                 });
 
-                // 총 링크 수 업데이트
                 document.getElementById('totalLinks').textContent = totalCount;
 
-                // 카테고리별로 표시
                 const contentDiv = document.getElementById('content');
                 contentDiv.innerHTML = '';
 
-                // 카테고리 순서 정의
                 const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
 
-                categoryOrder.forEach((category, categoryIndex) => {
+                categoryOrder.forEach((category, idx) => {
                     if (linksByCategory[category]) {
                         const section = document.createElement('div');
                         section.className = 'category-section';
-                        section.style.animationDelay = `${categoryIndex * 0.1}s`;
+                        section.style.animationDelay = `${idx * 0.1}s`;
                         
                         const title = document.createElement('h2');
                         title.className = 'category-title';
@@ -432,36 +435,36 @@
                         const grid = document.createElement('div');
                         grid.className = 'links-grid';
 
-                        linksByCategory[category].forEach((link, index) => {
-                            const card = createLinkCard(link, index);
-                            grid.appendChild(card);
+                        linksByCategory[category].forEach((link, i) => {
+                            grid.appendChild(createLinkCard(link, i));
                         });
 
                         section.appendChild(grid);
                         contentDiv.appendChild(section);
                     }
                 });
+
+                console.log('✅ 렌더링 완료');
+
             } catch (error) {
-                console.error('링크 로드 오류:', error);
+                console.error('❌ 데이터 로드 실패:', error);
+                showError('데이터 로드 실패', error);
                 document.getElementById('content').innerHTML = 
-                    '<div class="loading">데이터를 불러오는 중 오류가 발생했습니다.</div>';
+                    '<div class="loading">❌ 데이터를 불러올 수 없습니다</div>';
             }
         }
 
-        // 링크 카드 생성
         function createLinkCard(link, index) {
             const card = document.createElement('a');
             card.href = link.url;
             card.target = '_blank';
             card.className = 'link-card';
-            card.style.setProperty('--card-color', link.color || '#667eea');
+            card.style.setProperty('--card-color', link.color || colorMap[link.name] || '#667eea');
             card.style.animationDelay = `${index * 0.05}s`;
 
-            // 아이콘 추가
-            const icon = document.createElement('i');
-            const iconClass = iconMap[link.name] || 'fa-solid fa-link';
-            icon.className = `link-icon ${iconClass}`;
-            console.log(`${link.name} 아이콘:`, iconClass);
+            const icon = document.createElement('div');
+            icon.className = 'link-icon';
+            icon.textContent = emojiMap[link.name] || '🔗';
             card.appendChild(icon);
 
             const name = document.createElement('div');
@@ -477,29 +480,9 @@
             return card;
         }
 
-        // Font Awesome 로딩 확인
-        function checkFontAwesome() {
-            const testIcon = document.createElement('i');
-            testIcon.className = 'fa-solid fa-robot';
-            testIcon.style.display = 'none';
-            document.body.appendChild(testIcon);
-            
-            const computed = window.getComputedStyle(testIcon);
-            const fontFamily = computed.getPropertyValue('font-family');
-            
-            console.log('Font Awesome 로딩 상태:', fontFamily);
-            document.body.removeChild(testIcon);
-            
-            return fontFamily.includes('Font Awesome');
-        }
-
-        // 페이지 로드 시 실행
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loaded = checkFontAwesome();
-                console.log('Font Awesome 로드됨:', loaded);
-                loadLinks();
-            }, 500);
+            console.log('🚀 페이지 로드 완료');
+            setTimeout(loadLinks, 1000);
         });
     </script>
 </body>
