@@ -1,310 +1,201 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>레퍼런스 정리 사이트</title>
-    <!-- Tailwind CSS 및 Lucide Icons 로드 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* 배경색 검은색, 글씨 흰색 설정 */
-        body {
-            background-color: #000000;
-            color: #FFFFFF;
-            font-family: 'Inter', sans-serif;
+<script type="module">
+    // Firebase SDK 최신 안정 버전으로 변경
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyDzPalx0dYavQNN12N9IXAElO9sMZRT3Hk",
+        authDomain: "artist-reference-2025-a0ed1.firebaseapp.com",
+        projectId: "artist-reference-2025-a0ed1",
+        storageBucket: "artist-reference-2025-a0ed1.firebasestorage.app",
+        messagingSenderId: "478548583901",
+        appId: "1:478548583901:web:21f3e6462bd3fc7ce7c234"
+    };
+
+    let db;
+    let app;
+    
+    // Firebase 초기화 (개선된 에러 핸들링)
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        console.log("✅ Firebase 초기화 성공");
+    } catch (e) {
+        console.error("❌ Firebase 초기화 실패:", e.message);
+        console.error("전체 오류:", e);
+        document.getElementById('links-container').innerHTML = `
+            <div class="text-center text-red-500 py-16">
+                🚨 Firebase 연결 실패<br>
+                오류: ${e.message}<br>
+                <small class="text-gray-400">콘솔(F12)에서 자세한 오류를 확인하세요</small>
+            </div>`;
+    }
+
+    const linksContainer = document.getElementById('links-container');
+
+    const createLinkElement = (link, isTrending = false) => {
+        const colorClass = link.color || 'text-white';
+        const url = link.url || '#';
+        const name = typeof link.name === 'string' ? link.name : '이름 없음';
+        const description = typeof link.description === 'string' ? link.description : '설명 없음';
+        const rank = link.rank_order > 0 ? link.rank_order : null;
+
+        let rankingBadge = '';
+        if (isTrending && rank) {
+            rankingBadge = `<span class="ranking-badge bg-red-600">BEST ${rank}</span>`;
         }
-        .container {
-            max-width: 1400px; 
+
+        return `
+            <a href="${url}" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer relative">
+                ${rankingBadge}
+                <div class="ratio-4-to-1">
+                    <div class="item-content ${colorClass}">
+                        <span class="text-xl font-extrabold mb-1 whitespace-normal">${name}</span>
+                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">${description}</span>
+                    </div>
+                </div>
+            </a>
+        `;
+    };
+
+    const loadLinks = async () => {
+        if (!db) {
+            console.error("❌ Firestore DB가 초기화되지 않았습니다");
+            return;
         }
+
+        console.log("🔄 데이터 로딩 시작...");
         
-        /* 썸네일 박스의 비율을 4:1로 설정하는 CSS (가장 확실한 비율 제어) */
-        .ratio-4-to-1 {
-            padding-top: 25%; /* 4:1 비율 = 높이/너비 = 1/4 = 25% */
-            position: relative; /* 자식 요소의 절대 위치 기준점 */
-            background-color: #1a1a1a;
-            border-radius: 0.5rem;
-        }
+        try {
+            // 1. Trending Links 로드
+            console.log("📊 Trending 링크 조회 중...");
+            const trendingQuery = query(
+                collection(db, "links"),
+                where("is_trending", "==", true),
+                orderBy("rank_order", "asc")
+            );
+            const trendingSnapshot = await getDocs(trendingQuery);
+            const trendingLinks = [];
+            trendingSnapshot.forEach((doc) => {
+                trendingLinks.push({ id: doc.id, ...doc.data() });
+            });
+            console.log(`✅ Trending 링크 ${trendingLinks.length}개 로드됨`);
 
-        /* 4개 항목을 한 줄에 표시하기 위한 그리드 설정 (총 4열) */
-        .grid-4-cols {
-            grid-template-columns: repeat(2, minmax(0, 1fr)); /* 모바일은 2열 */
-        }
-        @media (min-width: 768px) { /* md: 태블릿 이상 */
-            .grid-4-cols {
-                grid-template-columns: repeat(4, minmax(0, 1fr)); /* 데스크톱에서 4열 */
-            }
-        }
-        /* 항목 내부 텍스트 스타일 */
-        .item-content {
-            /* 텍스트 내용이 많아도 중앙 정렬이 되도록 설정 */
-            text-align: center;
-            padding: 0 10px; /* 좌우 패딩 추가 */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%; /* 부모 높이에 맞춤 */
-        }
-    </style>
-</head>
-<body class="min-h-screen p-4 sm:p-8">
+            // 2. All Links 로드
+            console.log("📊 전체 링크 조회 중...");
+            const allQuery = collection(db, "links");
+            const allSnapshot = await getDocs(allQuery);
+            const allLinks = [];
+            allSnapshot.forEach((doc) => {
+                allLinks.push({ id: doc.id, ...doc.data() });
+            });
+            console.log(`✅ 전체 링크 ${allLinks.length}개 로드됨`);
 
-    <div class="container mx-auto">
-        <!-- 1. 제목 영역 -->
-        <header class="py-8 text-center">
-            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
-                레퍼런스 정리 사이트
-            </h1>
-            <p class="mt-2 text-lg text-gray-400">나만의 아티스트 작업물 큐레이션</p>
-        </header>
-
-        <!-- 2. 검색창 영역 (Google 검색 연동) -->
-        <section class="mb-6 flex justify-center">
-            <form id="google-search-form" action="https://www.google.com/search" method="get" target="_blank" class="w-full max-w-3xl">
-                <div class="relative">
-                    <input type="text" name="q" id="search-input" placeholder="입력시 구글 페이지로 전환됩니다. (예: 3D motion graphics)"
-                           class="w-full p-4 pl-12 bg-gray-800 text-white rounded-xl border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150 shadow-lg"
-                           aria-label="Google 검색창">
-                    <button type="submit" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 hover:text-indigo-400 transition duration-150">
-                        <i data-lucide="search"></i>
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- 3. 필터 버튼 영역 (클릭 시 자동 Google 검색) -->
-        <section class="mb-12 flex justify-center">
-            <div class="flex flex-wrap justify-center gap-3 w-full max-w-3xl">
-                <button data-keyword="3D Art" class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
-                    3D
-                </button>
-                <button data-keyword="Motion Graphics" class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
-                    Motion
-                </button>
-                <button data-keyword="Media Art Exhibition" class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
-                    Media Art
-                </button>
-                <button data-keyword="VFX Breakdown" class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
-                    VFX
-                </button>
-            </div>
-        </section>
-
-        
-        <!-- ============================================== -->
-        <!-- 4. AI TOOLS 섹션 -->
-        <!-- ============================================== -->
-        <h2 class="text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2">AI TOOLS</h2>
-        
-        <main class="grid grid-4-cols gap-3 sm:gap-4 mb-12">
+            // Trending 제외한 일반 링크 필터링
+            const trendingIds = new Set(trendingLinks.map(link => link.id));
+            const normalLinks = allLinks.filter(link => !trendingIds.has(link.id));
             
-            <!-- CHATGPT -->
-            <a href="https://chat.openai.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-emerald-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">CHATGPT</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">텍스트 생성, 브레인스토밍, 코딩 지원</span>
-                    </div>
-                </div>
-            </a>
+            // 카테고리별 그룹화
+            const groupedLinks = normalLinks.reduce((acc, link) => {
+                const category = typeof link.category === 'string' && link.category.trim() !== '' ? link.category : '기타';
+                if (!acc[category]) {
+                    acc[category] = [];
+                }
+                acc[category].push(link);
+                return acc;
+            }, {});
 
-            <!-- GEMINI -->
-            <a href="https://gemini.google.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-yellow-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">GEMINI</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">텍스트, 코딩, 데이터 분석 지원</span>
-                    </div>
-                </div>
-            </a>
+            // 로딩 메시지 제거
+            linksContainer.innerHTML = ''; 
 
-            <!-- ZENSPARK -->
-            <a href="#" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-orange-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">ZENSPARK</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">콘텐츠/카피라이팅 생성, 텍스트 편집</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- FIREFLY -->
-            <a href="https://firefly.adobe.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-pink-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">FIREFLY</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">이미지 생성, 텍스트 효과 (Adobe)</span>
-                    </div>
-                </div>
-            </a>
-        </main>
+            // TRENDING NOW 섹션
+            if (trendingLinks.length > 0) {
+                const trendingHeader = document.createElement('h2');
+                trendingHeader.className = 'text-2xl font-bold mb-4 mt-8 tracking-wider text-indigo-400 border-b border-indigo-700 pb-2';
+                trendingHeader.textContent = '🔥 TRENDING NOW';
+                linksContainer.appendChild(trendingHeader);
 
-        
-        <!-- ============================================== -->
-        <!-- 5. CAREER & JOB 섹션 (새로 추가) -->
-        <!-- ============================================== -->
-        <h2 class="text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2">CAREER & JOB</h2>
-
-        <main class="grid grid-4-cols gap-3 sm:gap-4 mb-12">
-            
-            <!-- JOBKOREA -->
-            <a href="https://www.jobkorea.co.kr/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-teal-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">JOBKOREA</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">광범위하고 대중적인 국내 최대 채용 포털</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- SARAMIN -->
-            <a href="https://www.saramin.co.kr/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-cyan-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">SARAMIN</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">높은 인지도와 다양한 직무별 채용 정보 제공</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- ROKET PUNCH -->
-            <a href="https://www.rocketpunch.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-rose-500 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">ROKET PUNCH</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">IT/스타트업 채용 및 업계 트렌드 제공</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- WANTED -->
-            <a href="https://www.wanted.co.kr/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-lime-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">WANTED</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">개발자, 디자이너 등 IT/테크 직군 특화</span>
-                    </div>
-                </div>
-            </a>
-        </main>
-        
-        
-        <!-- ============================================== -->
-        <!-- 6. VIDEO 섹션 -->
-        <!-- ============================================== -->
-        <h2 class="text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2">VIDEO</h2>
-        
-        <main class="grid grid-4-cols gap-3 sm:gap-4 mb-12">
-            
-            <!-- VIMEO -->
-            <a href="https://vimeo.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-sky-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">VIMEO</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">고화질 아티스트 포트폴리오</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- YOUTUBE -->
-            <a href="https://www.youtube.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                        <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-red-500 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">YOUTUBE</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">튜토리얼, 강의 및 대중 콘텐츠</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- ARTSTATION -->
-            <a href="https://www.artstation.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-orange-500 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">ARTSTATION</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">3D, 게임, 영화 산업 포트폴리오</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- DRIBBBLE -->
-            <a href="https://dribbble.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-pink-600 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">DRIBBBLE</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">짧은 모션(GIF) 및 디자인 레퍼런스</span>
-                    </div>
-                </div>
-            </a>
-        </main>
-        
-        <!-- ============================================== -->
-        <!-- 7. DESIGN & PORTFOLIO 섹션 -->
-        <!-- ============================================== -->
-        <h2 class="text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2">DESIGN & PORTFOLIO</h2>
-
-        <main class="grid grid-4-cols gap-3 sm:gap-4 mb-12">
-
-            <!-- BEHANCE -->
-            <a href="https://www.behance.net/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-indigo-400 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">BEHANCE</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">종합 크리에이티브 포트폴리오</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- PINTEREST -->
-            <a href="https://www.pinterest.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-red-700 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">PINTEREST</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">무드보드 및 비주얼 영감 자료</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- MUZLI -->
-            <a href="https://muz.li/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-blue-500 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">MUZLI</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">디자인 트렌드 큐레이션 피드</span>
-                    </div>
-                </div>
-            </a>
-            
-            <!-- AWWWARDS -->
-            <a href="https://www.awwwards.com/" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer">
-                <div class="ratio-4-to-1">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-green-500 item-content">
-                        <span class="text-xl font-extrabold mb-1 whitespace-nowrap">AWWWWARDS</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">최신 웹 디자인 트렌드 레퍼런스</span>
-                    </div>
-                </div>
-            </a>
-            
-        </main>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchForm = document.getElementById('google-search-form');
-            const filterButtons = document.querySelectorAll('.filter-btn');
-
-            // 필터 버튼 클릭 이벤트 리스너 추가: 클릭 시 Google 검색 실행
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const keyword = button.getAttribute('data-keyword');
-                    
-                    // 검색창에 키워드 입력 후 폼 제출 (새 탭에서 Google 검색 결과 열림)
-                    document.getElementById('search-input').value = keyword;
-                    searchForm.submit();
+                const trendingContent = document.createElement('main');
+                trendingContent.className = 'grid grid-4-cols gap-3 sm:gap-4 mb-12';
+                
+                trendingLinks.forEach(link => {
+                    trendingContent.innerHTML += createLinkElement(link, true);
                 });
+                linksContainer.appendChild(trendingContent);
+            }
+
+            // 카테고리별 섹션
+            const categories = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
+
+            categories.forEach(category => {
+                const links = groupedLinks[category];
+                if (links && links.length > 0) {
+                    const categoryHeader = document.createElement('h2');
+                    categoryHeader.className = 'text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2';
+                    categoryHeader.textContent = category;
+                    linksContainer.appendChild(categoryHeader);
+
+                    const mainContent = document.createElement('main');
+                    mainContent.className = 'grid grid-4-cols gap-3 sm:gap-4 mb-12';
+
+                    links.forEach(link => {
+                        mainContent.innerHTML += createLinkElement(link, false);
+                    });
+                    linksContainer.appendChild(mainContent);
+                }
+            });
+
+            if (allLinks.length === 0) {
+                linksContainer.innerHTML = '<div class="text-center text-yellow-500 py-16">⚠️ 데이터베이스가 비어있습니다</div>';
+            }
+
+            console.log("✅ 데이터 로딩 완료!");
+
+        } catch (e) {
+            console.error("❌ 데이터 로딩 중 오류:", e.message);
+            console.error("전체 오류:", e);
+            console.error("오류 코드:", e.code);
+            
+            linksContainer.innerHTML = `
+                <div class="text-center text-red-500 py-16">
+                    🚨 데이터 로딩 실패<br>
+                    <strong>오류:</strong> ${e.message}<br>
+                    <strong>코드:</strong> ${e.code || 'N/A'}<br><br>
+                    <div class="text-sm text-gray-400 mt-4">
+                        <p>가능한 원인:</p>
+                        <ul class="list-disc list-inside mt-2">
+                            <li>Firestore 보안 규칙이 읽기를 차단함</li>
+                            <li>인덱스가 생성되지 않음</li>
+                            <li>네트워크 연결 문제</li>
+                        </ul>
+                        <p class="mt-4">콘솔(F12)에서 자세한 내용을 확인하세요</p>
+                    </div>
+                </div>`;
+        }
+    };
+
+    // DOM 로드 후 실행
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("🚀 페이지 로드 완료, Firebase 연결 시작");
+        loadLinks();
+        
+        // 필터 버튼 로직
+        const searchForm = document.getElementById('google-search-form');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const keyword = button.getAttribute('data-keyword');
+                document.getElementById('search-input').value = keyword;
+                searchForm.submit();
             });
         });
-    </script>
+    });
 
-</body>
-</html>
+    // Lucide 아이콘 로드
+    setTimeout(() => {
+        if(typeof lucide !== 'undefined' && lucide.createIcons) {
+            lucide.createIcons();
+        }
+    }, 100); 
+</script>
