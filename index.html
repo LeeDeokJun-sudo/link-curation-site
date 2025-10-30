@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panda Universe - 레퍼런스 큐레이션</title>
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
     <style>
         * {
             margin: 0;
@@ -201,13 +197,6 @@
             transform: translateY(-3px);
         }
 
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.5rem;
-            padding: 50px;
-        }
-
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -258,7 +247,7 @@
             
             <div class="stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalLinks">16</span>
+                    <span class="stat-number">16</span>
                     <span class="stat-label">큐레이션 사이트</span>
                 </div>
                 <div class="stat-item">
@@ -268,9 +257,7 @@
             </div>
         </header>
 
-        <div id="content">
-            <div class="loading">🔄 데이터 로딩 중...</div>
-        </div>
+        <div id="content"></div>
 
         <footer>
             <p><strong>Panda Universe</strong> - 이덕준</p>
@@ -293,130 +280,44 @@
     </div>
 
     <script>
-        // link-site-7ac5b 프로젝트 Firebase 설정
-        const firebaseConfig = {
-            apiKey: "AIzaSyDFSYCKpykp30NE3UOPb4-wDUqHpC5gd6I",
-            authDomain: "link-site-7ac5b.firebaseapp.com",
-            projectId: "link-site-7ac5b",
-            storageBucket: "link-site-7ac5b.firebasestorage.app",
-            messagingSenderId: "1055991485663",
-            appId: "1:1055991485663:web:4fe5c9e15e35fbd2771da7"
+        const linksData = {
+            'AI TOOLS': [
+                { name: 'ChatGPT', url: 'https://chat.openai.com/', description: 'OpenAI의 대화형 AI 챗봇', icon: '🤖', color: '#10A37F' },
+                { name: 'Claude', url: 'https://claude.ai/', description: 'Anthropic의 AI 어시스턴트', icon: '🧠', color: '#CC9B7A' },
+                { name: 'Sora', url: 'https://openai.com/sora', description: 'OpenAI의 텍스트-비디오 생성 AI', icon: '✨', color: '#FF6B6B' },
+                { name: 'Midjourney', url: 'https://www.midjourney.com/', description: 'AI 기반 이미지 생성 도구', icon: '🎨', color: '#4F46E5' },
+                { name: 'Pika', url: 'https://pika.art/', description: 'AI 비디오 생성 플랫폼', icon: '📹', color: '#8B5CF6' },
+                { name: 'Runway', url: 'https://runwayml.com/', description: 'AI 비디오 편집 및 생성 도구', icon: '🎬', color: '#00DDB3' }
+            ],
+            'CAREER & JOB': [
+                { name: 'LinkedIn', url: 'https://www.linkedin.com/', description: '전문가 네트워킹 플랫폼', icon: '💼', color: '#0A66C2' },
+                { name: 'JobKorea', url: 'https://www.jobkorea.co.kr/', description: '국내 최대 채용 플랫폼', icon: '👔', color: '#4A90E2' },
+                { name: 'Wanted', url: 'https://www.wanted.co.kr/', description: 'IT/스타트업 전문 채용', icon: '🎯', color: '#3366FF' },
+                { name: 'Saramin', url: 'https://www.saramin.co.kr/', description: '종합 취업 정보 사이트', icon: '🏢', color: '#0072BC' }
+            ],
+            'VIDEO': [
+                { name: 'YouTube', url: 'https://www.youtube.com/', description: '세계 최대 동영상 플랫폼', icon: '🎥', color: '#FF0000' },
+                { name: 'Vimeo', url: 'https://vimeo.com/', description: '고품질 비디오 공유 플랫폼', icon: '📺', color: '#1AB7EA' }
+            ],
+            'DESIGN & PORTFOLIO': [
+                { name: 'Behance', url: 'https://www.behance.net/', description: 'Adobe의 크리에이티브 포트폴리오 플랫폼', icon: '🎨', color: '#1769FF' },
+                { name: 'Dribbble', url: 'https://dribbble.com/', description: '디자이너 커뮤니티 및 포트폴리오', icon: '🏀', color: '#EA4C89' },
+                { name: 'Awwwards', url: 'https://www.awwwards.com/', description: '최신 웹 디자인 트렌드 레퍼런스', icon: '🏆', color: '#FACC15' },
+                { name: 'Pinterest', url: 'https://www.pinterest.com/', description: '비주얼 아이디어 발견 플랫폼', icon: '📌', color: '#E60023' }
+            ]
         };
-
-        // Firebase 초기화
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        const emojiMap = {
-            'ChatGPT': '🤖',
-            'Claude': '🧠',
-            'Sora': '✨',
-            'Midjourney': '🎨',
-            'Pika': '📹',
-            'Runway': '🎬',
-            'LinkedIn': '💼',
-            'JobKorea': '👔',
-            'Wanted': '🎯',
-            'Saramin': '🏢',
-            'YouTube': '🎥',
-            'Vimeo': '📺',
-            'Behance': '🎨',
-            'Dribbble': '🏀',
-            'Awwwards': '🏆',
-            'Pinterest': '📌'
-        };
-
-        const colorMap = {
-            'text-red-500': '#EF4444',
-            'text-blue-500': '#3B82F6',
-            'text-purple-500': '#A855F7',
-            'text-green-500': '#10B981',
-            'text-yellow-400': '#FACC15',
-            'text-pink-500': '#EC4899',
-            'text-indigo-500': '#6366F1',
-            'text-cyan-500': '#06B6D4',
-            'text-orange-500': '#F97316',
-            'text-teal-500': '#14B8A6'
-        };
-
-        async function loadLinks() {
-            try {
-                const snapshot = await db.collection('links').orderBy('rank_order').get();
-                
-                if (snapshot.empty) {
-                    throw new Error('데이터가 없습니다');
-                }
-
-                const linksByCategory = {};
-
-                snapshot.forEach(doc => {
-                    const link = doc.data();
-                    const category = link.category || 'UNCATEGORIZED';
-                    
-                    if (!linksByCategory[category]) {
-                        linksByCategory[category] = [];
-                    }
-                    
-                    // Tailwind 색상 클래스를 hex로 변환
-                    if (link.color && link.color.startsWith('text-')) {
-                        link.color = colorMap[link.color] || '#667eea';
-                    }
-                    
-                    linksByCategory[category].push(link);
-                });
-
-                document.getElementById('totalLinks').textContent = snapshot.size;
-
-                const contentDiv = document.getElementById('content');
-                contentDiv.innerHTML = '';
-
-                const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
-
-                categoryOrder.forEach((category, idx) => {
-                    if (linksByCategory[category]) {
-                        const section = document.createElement('div');
-                        section.className = 'category-section';
-                        section.style.animationDelay = `${idx * 0.1}s`;
-                        
-                        const title = document.createElement('h2');
-                        title.className = 'category-title';
-                        title.textContent = category;
-                        section.appendChild(title);
-
-                        const grid = document.createElement('div');
-                        grid.className = 'links-grid';
-
-                        linksByCategory[category].forEach((link, i) => {
-                            grid.appendChild(createLinkCard(link, i));
-                        });
-
-                        section.appendChild(grid);
-                        contentDiv.appendChild(section);
-                    }
-                });
-
-            } catch (error) {
-                console.error('로드 실패:', error);
-                document.getElementById('content').innerHTML = `
-                    <div class="loading" style="color: #ff6b6b;">
-                        ❌ 데이터 로드 실패<br>
-                        <small style="font-size: 0.9rem; opacity: 0.8;">${error.message}</small>
-                    </div>
-                `;
-            }
-        }
 
         function createLinkCard(link, index) {
             const card = document.createElement('a');
             card.href = link.url;
             card.target = '_blank';
             card.className = 'link-card';
-            card.style.setProperty('--card-color', link.color || '#667eea');
+            card.style.setProperty('--card-color', link.color);
             card.style.animationDelay = `${index * 0.05}s`;
 
             const icon = document.createElement('div');
             icon.className = 'link-icon';
-            icon.textContent = emojiMap[link.name] || '🔗';
+            icon.textContent = link.icon;
             card.appendChild(icon);
 
             const name = document.createElement('div');
@@ -432,9 +333,33 @@
             return card;
         }
 
-        window.addEventListener('load', () => {
-            setTimeout(loadLinks, 1000);
-        });
+        function renderLinks() {
+            const contentDiv = document.getElementById('content');
+            const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
+
+            categoryOrder.forEach((category, idx) => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.style.animationDelay = `${idx * 0.1}s`;
+                
+                const title = document.createElement('h2');
+                title.className = 'category-title';
+                title.textContent = category;
+                section.appendChild(title);
+
+                const grid = document.createElement('div');
+                grid.className = 'links-grid';
+
+                linksData[category].forEach((link, i) => {
+                    grid.appendChild(createLinkCard(link, i));
+                });
+
+                section.appendChild(grid);
+                contentDiv.appendChild(section);
+            });
+        }
+
+        window.addEventListener('load', renderLinks);
     </script>
 </body>
 </html>
