@@ -1,201 +1,230 @@
-<script type="module">
-    // Firebase SDK 최신 안정 버전으로 변경
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyDzPalx0dYavQNN12N9IXAElO9sMZRT3Hk",
-        authDomain: "artist-reference-2025-a0ed1.firebaseapp.com",
-        projectId: "artist-reference-2025-a0ed1",
-        storageBucket: "artist-reference-2025-a0ed1.firebasestorage.app",
-        messagingSenderId: "478548583901",
-        appId: "1:478548583901:web:21f3e6462bd3fc7ce7c234"
-    };
-
-    let db;
-    let app;
-    
-    // Firebase 초기화 (개선된 에러 핸들링)
-    try {
-        app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        console.log("✅ Firebase 초기화 성공");
-    } catch (e) {
-        console.error("❌ Firebase 초기화 실패:", e.message);
-        console.error("전체 오류:", e);
-        document.getElementById('links-container').innerHTML = `
-            <div class="text-center text-red-500 py-16">
-                🚨 Firebase 연결 실패<br>
-                오류: ${e.message}<br>
-                <small class="text-gray-400">콘솔(F12)에서 자세한 오류를 확인하세요</small>
-            </div>`;
-    }
-
-    const linksContainer = document.getElementById('links-container');
-
-    const createLinkElement = (link, isTrending = false) => {
-        const colorClass = link.color || 'text-white';
-        const url = link.url || '#';
-        const name = typeof link.name === 'string' ? link.name : '이름 없음';
-        const description = typeof link.description === 'string' ? link.description : '설명 없음';
-        const rank = link.rank_order > 0 ? link.rank_order : null;
-
-        let rankingBadge = '';
-        if (isTrending && rank) {
-            rankingBadge = `<span class="ranking-badge bg-red-600">BEST ${rank}</span>`;
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레퍼런스 정리 사이트</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
         }
+        .container {
+            max-width: 1400px; 
+        }
+        .ratio-4-to-1 {
+            padding-top: 25%;
+            position: relative;
+            background-color: #1a1a1a;
+            border-radius: 0.5rem;
+            height: 0; 
+            overflow: hidden;
+        }
+        .grid-4-cols {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (min-width: 768px) {
+            .grid-4-cols {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+        .item-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            text-align: center;
+            word-wrap: break-word; 
+            overflow-wrap: break-word;
+            z-index: 5;
+        }
+        .ranking-badge {
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            background-color: #ef4444;
+            color: white;
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 10;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
 
-        return `
-            <a href="${url}" target="_blank" class="block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02] cursor-pointer relative">
-                ${rankingBadge}
-                <div class="ratio-4-to-1">
-                    <div class="item-content ${colorClass}">
-                        <span class="text-xl font-extrabold mb-1 whitespace-normal">${name}</span>
-                        <span class="text-sm sm:text-xs font-medium text-gray-400 whitespace-normal leading-tight">${description}</span>
-                    </div>
+    <div class="container mx-auto">
+        <header class="py-8 text-center">
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
+                레퍼런스 정리 사이트
+            </h1>
+            <p class="mt-2 text-lg text-gray-400">나만의 아티스트 작업물 큐레이션</p>
+        </header>
+
+        <section class="mb-6 flex justify-center">
+            <div class="w-full max-w-3xl">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="검색어 입력 (예: 3D motion graphics)"
+                           class="w-full p-4 pl-12 bg-gray-800 text-white rounded-xl border border-gray-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150 shadow-lg">
                 </div>
-            </a>
-        `;
-    };
+            </div>
+        </section>
 
-    const loadLinks = async () => {
-        if (!db) {
-            console.error("❌ Firestore DB가 초기화되지 않았습니다");
-            return;
-        }
+        <section class="mb-12 flex justify-center">
+            <div class="flex flex-wrap justify-center gap-3 w-full max-w-3xl">
+                <button class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
+                    3D
+                </button>
+                <button class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
+                    Motion
+                </button>
+                <button class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
+                    Media Art
+                </button>
+                <button class="filter-btn bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-600 hover:text-white transition duration-200">
+                    VFX
+                </button>
+            </div>
+        </section>
 
-        console.log("🔄 데이터 로딩 시작...");
+        <div id="links-container">
+            <div class="text-center text-yellow-500 py-16">
+                ⏳ Firebase에서 데이터를 불러오는 중입니다...
+            </div>
+        </div>
         
+    </div>
+
+    <script type="module">
+        console.log("=== 스크립트 실행 시작 ===");
+        
+        // Firebase SDK 임포트
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDzPalx0dYavQNN12N9IXAElO9sMZRT3Hk",
+            authDomain: "artist-reference-2025-a0ed1.firebaseapp.com",
+            projectId: "artist-reference-2025-a0ed1",
+            storageBucket: "artist-reference-2025-a0ed1.firebasestorage.app",
+            messagingSenderId: "478548583901",
+            appId: "1:478548583901:web:21f3e6462bd3fc7ce7c234"
+        };
+
+        let db;
+        const linksContainer = document.getElementById('links-container');
+        
+        // Firebase 초기화
         try {
-            // 1. Trending Links 로드
-            console.log("📊 Trending 링크 조회 중...");
-            const trendingQuery = query(
-                collection(db, "links"),
-                where("is_trending", "==", true),
-                orderBy("rank_order", "asc")
-            );
-            const trendingSnapshot = await getDocs(trendingQuery);
-            const trendingLinks = [];
-            trendingSnapshot.forEach((doc) => {
-                trendingLinks.push({ id: doc.id, ...doc.data() });
-            });
-            console.log(`✅ Trending 링크 ${trendingLinks.length}개 로드됨`);
-
-            // 2. All Links 로드
-            console.log("📊 전체 링크 조회 중...");
-            const allQuery = collection(db, "links");
-            const allSnapshot = await getDocs(allQuery);
-            const allLinks = [];
-            allSnapshot.forEach((doc) => {
-                allLinks.push({ id: doc.id, ...doc.data() });
-            });
-            console.log(`✅ 전체 링크 ${allLinks.length}개 로드됨`);
-
-            // Trending 제외한 일반 링크 필터링
-            const trendingIds = new Set(trendingLinks.map(link => link.id));
-            const normalLinks = allLinks.filter(link => !trendingIds.has(link.id));
-            
-            // 카테고리별 그룹화
-            const groupedLinks = normalLinks.reduce((acc, link) => {
-                const category = typeof link.category === 'string' && link.category.trim() !== '' ? link.category : '기타';
-                if (!acc[category]) {
-                    acc[category] = [];
-                }
-                acc[category].push(link);
-                return acc;
-            }, {});
-
-            // 로딩 메시지 제거
-            linksContainer.innerHTML = ''; 
-
-            // TRENDING NOW 섹션
-            if (trendingLinks.length > 0) {
-                const trendingHeader = document.createElement('h2');
-                trendingHeader.className = 'text-2xl font-bold mb-4 mt-8 tracking-wider text-indigo-400 border-b border-indigo-700 pb-2';
-                trendingHeader.textContent = '🔥 TRENDING NOW';
-                linksContainer.appendChild(trendingHeader);
-
-                const trendingContent = document.createElement('main');
-                trendingContent.className = 'grid grid-4-cols gap-3 sm:gap-4 mb-12';
-                
-                trendingLinks.forEach(link => {
-                    trendingContent.innerHTML += createLinkElement(link, true);
-                });
-                linksContainer.appendChild(trendingContent);
-            }
-
-            // 카테고리별 섹션
-            const categories = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
-
-            categories.forEach(category => {
-                const links = groupedLinks[category];
-                if (links && links.length > 0) {
-                    const categoryHeader = document.createElement('h2');
-                    categoryHeader.className = 'text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2';
-                    categoryHeader.textContent = category;
-                    linksContainer.appendChild(categoryHeader);
-
-                    const mainContent = document.createElement('main');
-                    mainContent.className = 'grid grid-4-cols gap-3 sm:gap-4 mb-12';
-
-                    links.forEach(link => {
-                        mainContent.innerHTML += createLinkElement(link, false);
-                    });
-                    linksContainer.appendChild(mainContent);
-                }
-            });
-
-            if (allLinks.length === 0) {
-                linksContainer.innerHTML = '<div class="text-center text-yellow-500 py-16">⚠️ 데이터베이스가 비어있습니다</div>';
-            }
-
-            console.log("✅ 데이터 로딩 완료!");
-
+            console.log("Firebase 초기화 시도...");
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            console.log("✅ Firebase 초기화 성공!");
         } catch (e) {
-            console.error("❌ 데이터 로딩 중 오류:", e.message);
-            console.error("전체 오류:", e);
-            console.error("오류 코드:", e.code);
-            
+            console.error("❌ Firebase 초기화 실패:", e);
             linksContainer.innerHTML = `
                 <div class="text-center text-red-500 py-16">
-                    🚨 데이터 로딩 실패<br>
-                    <strong>오류:</strong> ${e.message}<br>
-                    <strong>코드:</strong> ${e.code || 'N/A'}<br><br>
-                    <div class="text-sm text-gray-400 mt-4">
-                        <p>가능한 원인:</p>
-                        <ul class="list-disc list-inside mt-2">
-                            <li>Firestore 보안 규칙이 읽기를 차단함</li>
-                            <li>인덱스가 생성되지 않음</li>
-                            <li>네트워크 연결 문제</li>
-                        </ul>
-                        <p class="mt-4">콘솔(F12)에서 자세한 내용을 확인하세요</p>
-                    </div>
+                    🚨 Firebase 초기화 실패<br>
+                    <div class="text-sm mt-4">${e.message}</div>
                 </div>`;
         }
-    };
 
-    // DOM 로드 후 실행
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log("🚀 페이지 로드 완료, Firebase 연결 시작");
-        loadLinks();
-        
-        // 필터 버튼 로직
-        const searchForm = document.getElementById('google-search-form');
-        const filterButtons = document.querySelectorAll('.filter-btn');
+        // 데이터 로딩 함수 (단순화)
+        async function loadLinks() {
+            if (!db) {
+                console.error("DB가 초기화되지 않음");
+                return;
+            }
 
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const keyword = button.getAttribute('data-keyword');
-                document.getElementById('search-input').value = keyword;
-                searchForm.submit();
-            });
-        });
-    });
+            try {
+                console.log("데이터 로딩 시작...");
+                
+                // 간단하게 전체 링크만 가져오기
+                const querySnapshot = await getDocs(collection(db, "links"));
+                
+                console.log(`총 ${querySnapshot.size}개 문서 발견`);
+                
+                if (querySnapshot.empty) {
+                    linksContainer.innerHTML = '<div class="text-center text-yellow-500 py-16">⚠️ 데이터가 없습니다</div>';
+                    return;
+                }
 
-    // Lucide 아이콘 로드
-    setTimeout(() => {
-        if(typeof lucide !== 'undefined' && lucide.createIcons) {
-            lucide.createIcons();
+                linksContainer.innerHTML = '';
+
+                // 카테고리별로 그룹화
+                const grouped = {};
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const category = data.category || '기타';
+                    if (!grouped[category]) grouped[category] = [];
+                    grouped[category].push({ id: doc.id, ...data });
+                });
+
+                // 렌더링
+                Object.keys(grouped).forEach(category => {
+                    const header = document.createElement('h2');
+                    header.className = 'text-2xl font-bold mb-4 mt-8 tracking-wider text-gray-300 border-b border-gray-700 pb-2';
+                    header.textContent = category;
+                    linksContainer.appendChild(header);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-4-cols gap-3 sm:gap-4 mb-12';
+
+                    grouped[category].forEach(link => {
+                        const a = document.createElement('a');
+                        a.href = link.url || '#';
+                        a.target = '_blank';
+                        a.className = 'block bg-gray-900 rounded-lg overflow-hidden shadow-2xl transition duration-300 hover:shadow-indigo-500/50 hover:scale-[1.02]';
+                        a.innerHTML = `
+                            <div class="ratio-4-to-1">
+                                <div class="item-content">
+                                    <span class="text-xl font-extrabold mb-1">${link.name || '이름 없음'}</span>
+                                    <span class="text-sm text-gray-400">${link.description || ''}</span>
+                                </div>
+                            </div>
+                        `;
+                        grid.appendChild(a);
+                    });
+
+                    linksContainer.appendChild(grid);
+                });
+
+                console.log("✅ 렌더링 완료!");
+
+            } catch (e) {
+                console.error("❌ 로딩 중 오류:", e);
+                linksContainer.innerHTML = `
+                    <div class="text-center text-red-500 py-16">
+                        🚨 데이터 로딩 실패<br>
+                        <div class="text-sm mt-4">오류: ${e.message}</div>
+                        <div class="text-sm mt-2">코드: ${e.code || 'N/A'}</div>
+                        <div class="text-xs text-gray-400 mt-4">
+                            Firestore 보안 규칙을 확인하세요
+                        </div>
+                    </div>`;
+            }
         }
-    }, 100); 
-</script>
+
+        // DOM 로드 후 실행
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadLinks);
+        } else {
+            loadLinks();
+        }
+
+        console.log("=== 스크립트 실행 완료 ===");
+    </script>
+
+</body>
+</html>
