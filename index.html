@@ -37,39 +37,39 @@
             margin: 0 auto;
         }
 
-        /* 테마 전환 버튼 (크기 1/2 축소) */
+        /* 테마 전환 버튼 */
         .theme-switcher {
             position: fixed;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             display: flex;
-            gap: 6px;
+            gap: 10px;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.1);
-            padding: 6px;
-            border-radius: 25px;
+            padding: 10px;
+            border-radius: 50px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .theme-btn {
-            width: 24px;
-            height: 24px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .theme-btn:hover {
-            transform: scale(1.15);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .theme-btn.active {
             border-color: #fff;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.3);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
         }
 
         .theme-btn.black {
@@ -179,11 +179,126 @@
             margin-top: 3px;
         }
 
+        /* 검색 및 필터 */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border-radius: 25px;
+            border: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-black .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-blue .search-input {
+            background: rgba(255, 255, 255, 0.12);
+            color: #e0f2fe;
+            border: 1px solid rgba(125, 211, 252, 0.3);
+        }
+
+        .theme-white .search-input {
+            background: white;
+            color: #1e293b;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .search-input::placeholder {
+            opacity: 0.5;
+        }
+
+        .theme-white .search-input::placeholder {
+            color: #64748b;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .theme-black .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-blue .filter-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: #e0f2fe;
+            border: 1px solid rgba(125, 211, 252, 0.3);
+        }
+
+        .theme-white .filter-btn {
+            background: white;
+            color: #1e293b;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
         /* 카테고리 */
         .category-section {
             margin-bottom: 35px;
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
+            transition: all 0.3s ease;
+        }
+
+        .category-section.hidden {
+            display: none;
         }
 
         .category-title {
@@ -224,11 +339,15 @@
             border-radius: 12px;
             padding: 18px;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
+        }
+
+        .link-card.hidden {
+            display: none;
         }
 
         .theme-black .link-card {
@@ -261,6 +380,7 @@
             height: 3px;
             background: var(--card-color, #667eea);
             transform: scaleX(0);
+            transform-origin: left;
             transition: transform 0.3s ease;
         }
 
@@ -269,23 +389,23 @@
         }
 
         .link-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px) scale(1.02);
         }
 
         .theme-black .link-card:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
             background: rgba(40, 40, 40, 0.95);
             border-color: var(--card-color);
         }
 
         .theme-blue .link-card:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
             background: rgba(20, 40, 50, 0.95);
             border-color: var(--card-color);
         }
 
         .theme-white .link-card:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
             background: rgba(255, 255, 255, 1);
             border-color: var(--card-color);
         }
@@ -298,7 +418,7 @@
         }
 
         .link-card:hover .link-icon {
-            transform: scale(1.1);
+            transform: scale(1.15) rotate(5deg);
         }
 
         .link-name {
@@ -315,6 +435,35 @@
         }
 
         .theme-white .link-description {
+            color: #64748b;
+        }
+
+        /* 검색 결과 없음 */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0.7;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .no-results-text {
+            font-size: 1.2rem;
+        }
+
+        .theme-black .no-results {
+            color: white;
+        }
+
+        .theme-blue .no-results {
+            color: #e0f2fe;
+        }
+
+        .theme-white .no-results {
             color: #64748b;
         }
 
@@ -434,17 +583,29 @@
             .theme-switcher {
                 top: 10px;
                 right: 10px;
-                padding: 5px;
-                gap: 5px;
+                padding: 8px;
             }
 
             .theme-btn {
-                width: 20px;
-                height: 20px;
+                width: 35px;
+                height: 35px;
             }
 
             header h1 { font-size: 1.5rem; }
             header p { font-size: 0.85rem; }
+            
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .category-filters {
+                justify-content: center;
+            }
+
             .category-title { font-size: 1.2rem; }
             .links-grid { grid-template-columns: 1fr; }
             .link-icon { font-size: 1.5rem; }
@@ -464,7 +625,7 @@
     </style>
 </head>
 <body class="theme-black">
-    <!-- 테마 전환 버튼 (1/2 크기) -->
+    <!-- 테마 전환 버튼 -->
     <div class="theme-switcher">
         <button class="theme-btn black active" onclick="setTheme('black')" title="다크 테마"></button>
         <button class="theme-btn blue" onclick="setTheme('blue')" title="딥 블루 테마"></button>
@@ -479,7 +640,7 @@
             
             <div class="stats">
                 <div class="stat-item">
-                    <span class="stat-number">18</span>
+                    <span class="stat-number" id="totalLinks">19</span>
                     <span class="stat-label">큐레이션 사이트</span>
                 </div>
                 <div class="stat-item">
@@ -489,10 +650,29 @@
             </div>
         </header>
 
+        <!-- 검색 및 필터 -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="사이트 검색...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="category-filters">
+                <button class="filter-btn active" onclick="filterCategory('all')">전체</button>
+                <button class="filter-btn" onclick="filterCategory('AI TOOLS')">AI TOOLS</button>
+                <button class="filter-btn" onclick="filterCategory('CAREER & JOB')">CAREER & JOB</button>
+                <button class="filter-btn" onclick="filterCategory('VIDEO')">VIDEO</button>
+                <button class="filter-btn" onclick="filterCategory('DESIGN & PORTFOLIO')">DESIGN</button>
+            </div>
+        </div>
+
         <div id="content"></div>
+        <div id="noResults" class="no-results" style="display: none;">
+            <div class="no-results-icon">🔍</div>
+            <div class="no-results-text">검색 결과가 없습니다</div>
+        </div>
 
         <footer>
-            <p><strong>Panda Universe</strong></p>
+            <p><strong>Panda Universe</strong> - 이덕준</p>
             <p style="margin-top: 8px; opacity: 0.9;">3D 모션그래픽 & 미디어 아트 크리에이터</p>
             <div class="social-links">
                 <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
@@ -520,8 +700,9 @@
                 { name: 'Sora', url: 'https://openai.com/sora', description: 'OpenAI의 텍스트-비디오 생성 AI', icon: '✨', color: '#FF6B6B' },
                 { name: 'Midjourney', url: 'https://www.midjourney.com/', description: 'AI 기반 이미지 생성 도구', icon: '🎨', color: '#4F46E5' },
                 { name: 'Firefly', url: 'https://www.adobe.com/products/firefly.html', description: 'Adobe의 크리에이티브 AI 도구', icon: '🔥', color: '#FF0050' },
+                { name: 'Kling AI', url: 'https://klingai.com/', description: '중국 Kuaishou의 AI 비디오 생성 플랫폼', icon: '🎬', color: '#FF4500' },
                 { name: 'Pika', url: 'https://pika.art/', description: 'AI 비디오 생성 플랫폼', icon: '📹', color: '#8B5CF6' },
-                { name: 'Runway', url: 'https://runwayml.com/', description: 'AI 비디오 편집 및 생성 도구', icon: '🎬', color: '#00DDB3' }
+                { name: 'Runway', url: 'https://runwayml.com/', description: 'AI 비디오 편집 및 생성 도구', icon: '🎞️', color: '#00DDB3' }
             ],
             'CAREER & JOB': [
                 { name: 'LinkedIn', url: 'https://www.linkedin.com/', description: '전문가 네트워킹 플랫폼', icon: '💼', color: '#0A66C2' },
@@ -541,25 +722,80 @@
             ]
         };
 
+        let currentFilter = 'all';
+
         // 테마 전환 기능
         function setTheme(theme) {
             const body = document.body;
             body.className = 'theme-' + theme;
             
-            // 활성 버튼 표시
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.querySelector('.theme-btn.' + theme).classList.add('active');
             
-            // 로컬 스토리지에 저장
             localStorage.setItem('theme', theme);
         }
 
-        // 저장된 테마 불러오기
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'black';
             setTheme(savedTheme);
+        }
+
+        // 카테고리 필터
+        function filterCategory(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            applyFilters();
+        }
+
+        // 검색 기능
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                applyFilters();
+            });
+        }
+
+        // 필터 적용
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let hasResults = false;
+
+            document.querySelectorAll('.category-section').forEach(section => {
+                const category = section.querySelector('.category-title').textContent;
+                let categoryHasVisibleCards = false;
+
+                if (currentFilter === 'all' || currentFilter === category) {
+                    section.classList.remove('hidden');
+                    
+                    section.querySelectorAll('.link-card').forEach(card => {
+                        const name = card.querySelector('.link-name').textContent.toLowerCase();
+                        const description = card.querySelector('.link-description').textContent.toLowerCase();
+                        
+                        if (searchTerm === '' || name.includes(searchTerm) || description.includes(searchTerm)) {
+                            card.classList.remove('hidden');
+                            categoryHasVisibleCards = true;
+                            hasResults = true;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+
+                    if (!categoryHasVisibleCards) {
+                        section.classList.add('hidden');
+                    }
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
         }
 
         function createLinkCard(link, index) {
@@ -618,6 +854,7 @@
         window.addEventListener('load', () => {
             loadTheme();
             renderLinks();
+            setupSearch();
         });
     </script>
 </body>
