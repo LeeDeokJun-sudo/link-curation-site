@@ -302,315 +302,262 @@
         }
 
         .category-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 15px;
-            padding-left: 12px;
-            border-left: 4px solid;
+            font-weight: 600;
+            padding-left: 5px;
             transition: all 0.5s ease;
         }
 
-        .theme-black .category-title {
-            color: #ffffff;
-            border-color: #ffffff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
+        .theme-black .category-title,
         .theme-blue .category-title {
-            color: #e0f2fe;
-            border-color: #7dd3fc;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            color: white;
         }
 
         .theme-white .category-title {
             color: #1e293b;
-            border-color: #3b82f6;
-            text-shadow: none;
         }
 
-        /* 링크 그리드 */
-        .links-grid {
+        /* 사이트 그리드 */
+        .sites-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        /* 링크 카드 */
-        .link-card {
-            border-radius: 12px;
-            padding: 18px;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .link-card.hidden {
-            display: none;
-        }
-
-        .theme-black .link-card {
-            background: rgba(30, 30, 30, 0.9);
-            color: #e0e0e0;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-blue .link-card {
-            background: rgba(15, 32, 39, 0.85);
-            color: #e0f2fe;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-            border: 1px solid rgba(125, 211, 252, 0.2);
-        }
-
-        .theme-white .link-card {
-            background: rgba(255, 255, 255, 0.95);
-            color: #1e293b;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-
-        .link-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--card-color, #667eea);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .link-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .link-card:hover {
-            transform: translateY(-8px) scale(1.02);
-        }
-
-        .theme-black .link-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
-            background: rgba(40, 40, 40, 0.95);
-            border-color: var(--card-color);
-        }
-
-        .theme-blue .link-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-            background: rgba(20, 40, 50, 0.95);
-            border-color: var(--card-color);
-        }
-
-        .theme-white .link-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-            background: rgba(255, 255, 255, 1);
-            border-color: var(--card-color);
-        }
-
-        .link-icon {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-            display: block;
-        }
-
-        .link-card:hover .link-icon {
-            transform: scale(1.15) rotate(5deg);
-        }
-
-        .link-name {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: var(--card-color, #667eea);
-        }
-
-        .link-description {
-            font-size: 0.8rem;
-            line-height: 1.5;
-            opacity: 0.9;
-        }
-
-        .theme-white .link-description {
-            color: #64748b;
-        }
-
-        /* 검색 결과 없음 */
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            opacity: 0.7;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .no-results-icon {
-            font-size: 4rem;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 18px;
             margin-bottom: 20px;
         }
 
-        .no-results-text {
-            font-size: 1.2rem;
-        }
-
-        .theme-black .no-results {
-            color: white;
-        }
-
-        .theme-blue .no-results {
-            color: #e0f2fe;
-        }
-
-        .theme-white .no-results {
-            color: #64748b;
-        }
-
-        /* 푸터 - 개선된 버전 */
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 30px 25px;
-            border-radius: 15px;
+        /* 사이트 카드 */
+        .site-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 22px 15px;
+            border-radius: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            animation: fadeInUp 0.6s ease-out 0.3s;
-            animation-fill-mode: both;
-            transition: all 0.5s ease;
+            cursor: pointer;
         }
 
-        .theme-black footer {
+        .theme-black .site-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
         }
 
-        .theme-blue footer {
+        .theme-blue .site-card {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #e0f2fe;
         }
 
-        .theme-white footer {
+        .theme-white .site-card {
             background: rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            color: #2d3748;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .footer-brand {
-            margin-bottom: 20px;
+        .site-card:hover {
+            transform: translateY(-5px);
         }
 
-        .footer-brand h2 {
-            font-size: 1.3rem;
-            font-weight: bold;
+        .theme-black .site-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-blue .site-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-white .site-card:hover {
+            background: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .site-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .site-card:hover .site-icon {
+            transform: scale(1.1);
+        }
+
+        .site-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
             margin-bottom: 5px;
         }
 
-        .footer-tagline {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .footer-skills {
-            font-size: 0.85rem;
+        .site-description {
+            font-size: 0.75rem;
             opacity: 0.7;
-            margin-top: 5px;
+            text-align: center;
+            line-height: 1.3;
         }
 
-        .footer-divider {
-            margin: 20px 0;
-            padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        /* ===== 새로 추가: 썸네일 프리뷰 ===== */
+        .thumbnail-preview {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            z-index: 999;
+            overflow: hidden;
+            border: 3px solid;
+            pointer-events: none;
         }
 
-        .theme-white .footer-divider {
-            border-top-color: rgba(0,0,0,0.1);
-            border-bottom-color: rgba(0,0,0,0.1);
+        .theme-black .thumbnail-preview {
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .footer-connect {
+        .theme-blue .thumbnail-preview {
+            border-color: rgba(125, 211, 252, 0.5);
+        }
+
+        .theme-white .thumbnail-preview {
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .thumbnail-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .thumbnail-loading {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.1);
             font-size: 0.85rem;
-            opacity: 0.8;
-            margin-bottom: 10px;
+            color: #666;
         }
 
-        .social-links {
+        .site-card:hover .thumbnail-preview {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* 반응형: 작은 화면에서는 썸네일 숨기기 */
+        @media (max-width: 768px) {
+            .thumbnail-preview {
+                display: none !important;
+            }
+        }
+        /* ===== 썸네일 프리뷰 끝 ===== */
+
+        /* 푸터 */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
+        }
+
+        .theme-black footer {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .theme-blue footer {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .theme-white footer {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: #64748b;
+        }
+
+        .footer-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .theme-black .footer-brand,
+        .theme-blue .footer-brand {
+            color: white;
+        }
+
+        .theme-white .footer-brand {
+            color: #1e293b;
+        }
+
+        .footer-links {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 25px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
 
-        .social-link {
+        .footer-link {
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 20px;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
-        .theme-black .social-link {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .theme-black .footer-link {
+            color: rgba(255, 255, 255, 0.8);
         }
 
-        .theme-blue .social-link {
-            color: #e0f2fe;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(125, 211, 252, 0.2);
+        .theme-blue .footer-link {
+            color: rgba(255, 255, 255, 0.85);
         }
 
-        .theme-white .social-link {
-            color: #1e293b;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        .theme-white .footer-link {
+            color: #475569;
         }
 
-        .social-link:hover {
+        .footer-link:hover {
+            color: #667eea;
             transform: translateY(-2px);
         }
 
-        .theme-black .social-link:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .theme-blue .social-link:hover {
-            background: rgba(255, 255, 255, 0.18);
-        }
-
-        .theme-white .social-link:hover {
-            background: rgba(59, 130, 246, 0.15);
-        }
-
-        .footer-stats {
-            font-size: 0.8rem;
-            opacity: 0.6;
-            margin-top: 15px;
-        }
-
-        .footer-stats span {
-            opacity: 0.8;
-            margin: 0 5px;
-        }
-
-        .footer-copyright {
-            margin-top: 10px;
-            font-size: 0.75rem;
-            opacity: 0.5;
+        .footer-text {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 8px;
         }
 
         /* 애니메이션 */
         @keyframes fadeInDown {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -621,7 +568,7 @@
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -630,11 +577,35 @@
         }
 
         /* 반응형 */
+        @media (max-width: 1024px) {
+            .sites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .site-icon {
+                font-size: 2rem;
+            }
+
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            .stat-number {
+                font-size: 1.2rem;
+            }
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
             .theme-switcher {
-                top: 10px;
-                right: 10px;
+                top: 15px;
+                right: 15px;
                 padding: 8px;
+                gap: 8px;
             }
 
             .theme-btn {
@@ -642,9 +613,35 @@
                 height: 35px;
             }
 
-            header h1 { font-size: 1.5rem; }
-            header p { font-size: 0.85rem; }
-            
+            header h1 {
+                font-size: 1.4rem;
+            }
+
+            header p {
+                font-size: 0.85rem;
+            }
+
+            .subtitle {
+                font-size: 0.75rem;
+            }
+
+            .sites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 12px;
+            }
+
+            .site-icon {
+                font-size: 1.8rem;
+            }
+
+            .site-name {
+                font-size: 0.85rem;
+            }
+
+            .category-title {
+                font-size: 1.1rem;
+            }
+
             .controls {
                 flex-direction: column;
             }
@@ -656,50 +653,50 @@
             .category-filters {
                 justify-content: center;
             }
-
-            .category-title { font-size: 1.2rem; }
-            .links-grid { grid-template-columns: 1fr; }
-            .link-icon { font-size: 1.5rem; }
-            .link-name { font-size: 1rem; }
-            .link-description { font-size: 0.75rem; }
-
-            .footer-brand h2 { font-size: 1.1rem; }
-            .footer-tagline { font-size: 0.85rem; }
         }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .links-grid { grid-template-columns: repeat(3, 1fr); }
-            .link-icon { font-size: 1.6rem; }
-            .link-name { font-size: 1.05rem; }
-        }
+        @media (max-width: 480px) {
+            .stats {
+                gap: 12px;
+            }
 
-        @media (min-width: 1025px) {
-            .links-grid { grid-template-columns: repeat(5, 1fr); }
+            .stat-item {
+                padding: 8px 15px;
+            }
+
+            .stat-number {
+                font-size: 1rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
 <body class="theme-black">
-    <!-- 테마 전환 버튼 -->
-    <div class="theme-switcher">
-        <button class="theme-btn black active" onclick="setTheme('black')" title="다크 테마"></button>
-        <button class="theme-btn blue" onclick="setTheme('blue')" title="딥 블루 테마"></button>
-        <button class="theme-btn white" onclick="setTheme('white')" title="화이트 테마"></button>
-    </div>
-
     <div class="container">
+        <!-- 테마 전환 버튼 -->
+        <div class="theme-switcher">
+            <button class="theme-btn black active" onclick="setTheme('black')" title="Black Theme"></button>
+            <button class="theme-btn blue" onclick="setTheme('blue')" title="Blue Theme"></button>
+            <button class="theme-btn white" onclick="setTheme('white')" title="White Theme"></button>
+        </div>
+
+        <!-- 헤더 -->
         <header>
             <h1>🐼 Panda Universe</h1>
-            <p>3D Motion Graphics & Media Art 레퍼런스 큐레이션</p>
-            <p class="subtitle">Cinema 4D, Unreal Engine, AI Tools로 창작하는 크리에이터의 필수 링크 모음</p>
+            <p>3D 모션그래픽 & 미디어 아트 레퍼런스 큐레이션</p>
+            <p class="subtitle">Cinema 4D · Unreal Engine · Creative Tools</p>
             
             <div class="stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalLinks">19</span>
-                    <span class="stat-label">큐레이션 사이트</span>
+                    <span class="stat-number" id="total-sites">19</span>
+                    <span class="stat-label">TOTAL SITES</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">4</span>
-                    <span class="stat-label">카테고리</span>
+                    <span class="stat-label">CATEGORIES</span>
                 </div>
             </div>
         </header>
@@ -719,214 +716,246 @@
             </div>
         </div>
 
-        <div id="content"></div>
-        <div id="noResults" class="no-results" style="display: none;">
-            <div class="no-results-icon">🔍</div>
-            <div class="no-results-text">검색 결과가 없습니다</div>
-        </div>
+        <!-- 사이트 목록 -->
+        <div id="sitesContainer"></div>
 
-        <!-- 개선된 푸터 -->
+        <!-- 푸터 -->
         <footer>
-            <div class="footer-brand">
-                <h2>🐼 Panda Universe</h2>
-                <p class="footer-tagline">Curated Tools for Creative Professionals</p>
-                <p class="footer-skills">Cinema 4D • Unreal Engine • AI Tools</p>
+            <div class="footer-brand">🐼 Panda Universe</div>
+            <div class="footer-links">
+                <a href="https://youtube.com/@C4DUnreal" class="footer-link" target="_blank">YouTube</a>
+                <a href="https://behance.net/led32684792a3" class="footer-link" target="_blank">Behance</a>
+                <a href="https://github.com/leedeokjun-sudo" class="footer-link" target="_blank">GitHub</a>
             </div>
-            
-            <div class="footer-divider">
-                <p class="footer-connect">Connect & Explore</p>
-                <div class="social-links">
-                    <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
-                        🎥 YouTube
-                    </a>
-                    <a href="https://www.behance.net/led32684792a3" target="_blank" class="social-link">
-                        🎨 Behance
-                    </a>
-                    <a href="https://github.com/leedeokjun-sudo" target="_blank" class="social-link">
-                        💻 GitHub
-                    </a>
-                </div>
-            </div>
-            
-            <div>
-                <p class="footer-stats">
-                    <span>19 Sites</span> • 
-                    <span>4 Categories</span> • 
-                    <span>Updated Monthly</span>
-                </p>
-                <p class="footer-copyright">
-                    © 2024 Panda Universe. Built with 💜 for Creators.
-                </p>
-            </div>
+            <p class="footer-text">3D Motion Graphics & Media Art Creator</p>
         </footer>
     </div>
 
     <script>
-        const linksData = {
-            'AI TOOLS': [
-                { name: 'ChatGPT', url: 'https://chat.openai.com/', description: 'OpenAI의 대화형 AI 챗봇', icon: '🤖', color: '#10A37F' },
-                { name: 'Claude', url: 'https://claude.ai/', description: 'Anthropic의 AI 어시스턴트', icon: '🧠', color: '#CC9B7A' },
-                { name: 'Genspark', url: 'https://www.genspark.ai/', description: '차세대 AI 검색 엔진', icon: '⚡', color: '#FF6B35' },
-                { name: 'Sora', url: 'https://openai.com/sora', description: 'OpenAI의 텍스트-비디오 생성 AI', icon: '✨', color: '#FF6B6B' },
-                { name: 'Midjourney', url: 'https://www.midjourney.com/', description: 'AI 기반 이미지 생성 도구', icon: '🎨', color: '#4F46E5' },
-                { name: 'Firefly', url: 'https://www.adobe.com/products/firefly.html', description: 'Adobe의 크리에이티브 AI 도구', icon: '🔥', color: '#FF0050' },
-                { name: 'Kling AI', url: 'https://klingai.com/', description: '중국 Kuaishou의 AI 비디오 생성 플랫폼', icon: '🎬', color: '#FF4500' },
-                { name: 'Pika', url: 'https://pika.art/', description: 'AI 비디오 생성 플랫폼', icon: '📹', color: '#8B5CF6' },
-                { name: 'Runway', url: 'https://runwayml.com/', description: 'AI 비디오 편집 및 생성 도구', icon: '🎞️', color: '#00DDB3' }
-            ],
-            'CAREER & JOB': [
-                { name: 'LinkedIn', url: 'https://www.linkedin.com/', description: '전문가 네트워킹 플랫폼', icon: '💼', color: '#0A66C2' },
-                { name: 'JobKorea', url: 'https://www.jobkorea.co.kr/', description: '국내 최대 채용 플랫폼', icon: '👔', color: '#4A90E2' },
-                { name: 'Wanted', url: 'https://www.wanted.co.kr/', description: 'IT/스타트업 전문 채용', icon: '🎯', color: '#3366FF' },
-                { name: 'Saramin', url: 'https://www.saramin.co.kr/', description: '종합 취업 정보 사이트', icon: '🏢', color: '#0072BC' }
-            ],
-            'VIDEO': [
-                { name: 'YouTube', url: 'https://www.youtube.com/', description: '세계 최대 동영상 플랫폼', icon: '🎥', color: '#FF0000' },
-                { name: 'Vimeo', url: 'https://vimeo.com/', description: '고품질 비디오 공유 플랫폼', icon: '📺', color: '#1AB7EA' }
-            ],
-            'DESIGN & PORTFOLIO': [
-                { name: 'Behance', url: 'https://www.behance.net/', description: 'Adobe의 크리에이티브 포트폴리오 플랫폼', icon: '🎨', color: '#1769FF' },
-                { name: 'Dribbble', url: 'https://dribbble.com/', description: '디자이너 커뮤니티 및 포트폴리오', icon: '🏀', color: '#EA4C89' },
-                { name: 'Awwwards', url: 'https://www.awwwards.com/', description: '최신 웹 디자인 트렌드 레퍼런스', icon: '🏆', color: '#FACC15' },
-                { name: 'Pinterest', url: 'https://www.pinterest.com/', description: '비주얼 아이디어 발견 플랫폼', icon: '📌', color: '#E60023' }
-            ]
-        };
+        // 사이트 데이터
+        const sitesData = [
+            // AI TOOLS
+            { name: "ChatGPT", url: "https://chatgpt.com", icon: "🤖", color: "#10a37f", category: "AI TOOLS", description: "OpenAI 대화형 AI" },
+            { name: "Claude", url: "https://claude.ai", icon: "🧠", color: "#D97757", category: "AI TOOLS", description: "Anthropic AI 어시스턴트" },
+            { name: "Genspark", url: "https://genspark.ai", icon: "⚡", color: "#FF6B35", category: "AI TOOLS", description: "AI 검색 엔진" },
+            { name: "Midjourney", url: "https://midjourney.com", icon: "🎨", color: "#000000", category: "AI TOOLS", description: "AI 이미지 생성" },
+            { name: "Firefly", url: "https://firefly.adobe.com", icon: "🔥", color: "#FF0050", category: "AI TOOLS", description: "Adobe AI 크리에이티브" },
+            { name: "Runway", url: "https://runwayml.com", icon: "🎬", color: "#7C3AED", category: "AI TOOLS", description: "AI 비디오 편집" },
+            { name: "Kling AI", url: "https://klingai.com", icon: "🎬", color: "#FF4500", category: "AI TOOLS", description: "AI 영상 생성" },
+            { name: "Sora", url: "https://openai.com/sora", icon: "🌌", color: "#412991", category: "AI TOOLS", description: "OpenAI 비디오 생성" },
+            { name: "ElevenLabs", url: "https://elevenlabs.io", icon: "🎙️", color: "#6366F1", category: "AI TOOLS", description: "AI 음성 합성" },
+            
+            // CAREER & JOB
+            { name: "LinkedIn", url: "https://linkedin.com", icon: "💼", color: "#0077B5", category: "CAREER & JOB", description: "글로벌 커리어 네트워크" },
+            { name: "Indeed", url: "https://indeed.com", icon: "🔍", color: "#2164F3", category: "CAREER & JOB", description: "글로벌 채용 플랫폼" },
+            { name: "사람인", url: "https://saramin.co.kr", icon: "📋", color: "#3366FF", category: "CAREER & JOB", description: "한국 채용 플랫폼" },
+            { name: "원티드", url: "https://wanted.co.kr", icon: "🎯", color: "#3366FF", category: "CAREER & JOB", description: "한국 IT 채용" },
+            
+            // VIDEO
+            { name: "YouTube", url: "https://youtube.com", icon: "▶️", color: "#FF0000", category: "VIDEO", description: "글로벌 동영상 플랫폼" },
+            { name: "Vimeo", url: "https://vimeo.com", icon: "🎥", color: "#1AB7EA", category: "VIDEO", description: "크리에이터 영상 플랫폼" },
+            
+            // DESIGN & PORTFOLIO
+            { name: "Behance", url: "https://behance.net", icon: "🎨", color: "#1769FF", category: "DESIGN & PORTFOLIO", description: "Adobe 포트폴리오" },
+            { name: "Dribbble", url: "https://dribbble.com", icon: "🏀", color: "#EA4C89", category: "DESIGN & PORTFOLIO", description: "디자이너 커뮤니티" },
+            { name: "ArtStation", url: "https://artstation.com", icon: "🖼️", color: "#13AFF0", category: "DESIGN & PORTFOLIO", description: "3D/게임 아티스트" },
+            { name: "Pinterest", url: "https://pinterest.com", icon: "📌", color: "#E60023", category: "DESIGN & PORTFOLIO", description: "비주얼 레퍼런스" }
+        ];
 
         let currentFilter = 'all';
 
-        // 테마 전환 기능
-        function setTheme(theme) {
-            const body = document.body;
-            body.className = 'theme-' + theme;
-            
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector('.theme-btn.' + theme).classList.add('active');
-            
-            localStorage.setItem('theme', theme);
+        // ===== 새로 추가: OG 이미지 캐시 =====
+        const ogImageCache = {};
+
+        // OG 이미지 가져오기 함수
+        async function fetchOGImage(url) {
+            // 캐시에 있으면 캐시 반환
+            if (ogImageCache[url]) {
+                return ogImageCache[url];
+            }
+
+            try {
+                // Microlink API 사용 (무료 티어: 월 50개 요청)
+                const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data.image) {
+                    const imageUrl = data.data.image.url;
+                    ogImageCache[url] = imageUrl;
+                    return imageUrl;
+                }
+            } catch (error) {
+                console.log(`OG 이미지 로드 실패: ${url}`, error);
+            }
+
+            // 실패 시 스크린샷 API로 폴백
+            try {
+                const screenshotUrl = `https://image.thum.io/get/width/400/crop/600/${url}`;
+                ogImageCache[url] = screenshotUrl;
+                return screenshotUrl;
+            } catch (error) {
+                console.log(`스크린샷 로드 실패: ${url}`, error);
+            }
+
+            return null;
         }
 
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'black';
-            setTheme(savedTheme);
+        // 썸네일 HTML 생성
+        function createThumbnailHTML(url) {
+            return `
+                <div class="thumbnail-preview" data-url="${url}">
+                    <div class="thumbnail-loading">썸네일 로딩중...</div>
+                </div>
+            `;
+        }
+
+        // 썸네일 로드 (호버 시)
+        async function loadThumbnail(element, url) {
+            const thumbnail = element.querySelector('.thumbnail-preview');
+            if (!thumbnail || thumbnail.dataset.loaded === 'true') return;
+
+            const imageUrl = await fetchOGImage(url);
+            
+            if (imageUrl) {
+                thumbnail.innerHTML = `<img src="${imageUrl}" alt="Preview" loading="lazy">`;
+                thumbnail.dataset.loaded = 'true';
+            } else {
+                thumbnail.innerHTML = '<div class="thumbnail-loading">미리보기 없음</div>';
+            }
+        }
+        // ===== OG 이미지 기능 끝 =====
+
+        // 사이트 카드 생성
+        function createSiteCard(site) {
+            return `
+                <a href="${site.url}" 
+                   class="site-card" 
+                   target="_blank"
+                   data-category="${site.category}"
+                   data-name="${site.name.toLowerCase()}"
+                   data-description="${site.description.toLowerCase()}"
+                   onmouseenter="loadThumbnail(this, '${site.url}')">
+                    <div class="site-icon" style="color: ${site.color}">${site.icon}</div>
+                    <div class="site-name">${site.name}</div>
+                    <div class="site-description">${site.description}</div>
+                    ${createThumbnailHTML(site.url)}
+                </a>
+            `;
+        }
+
+        // 카테고리별 사이트 렌더링
+        function renderSites() {
+            const container = document.getElementById('sitesContainer');
+            const categories = [...new Set(sitesData.map(site => site.category))];
+            
+            let html = '';
+            categories.forEach((category, index) => {
+                const categorySites = sitesData.filter(site => site.category === category);
+                html += `
+                    <div class="category-section" data-category="${category}" style="animation-delay: ${index * 0.1}s">
+                        <h2 class="category-title">${category}</h2>
+                        <div class="sites-grid">
+                            ${categorySites.map(site => createSiteCard(site)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
 
         // 카테고리 필터
         function filterCategory(category) {
             currentFilter = category;
             
+            // 필터 버튼 active 상태 변경
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            applyFilters();
-        }
-
-        // 검색 기능
-        function setupSearch() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                applyFilters();
-            });
-        }
-
-        // 필터 적용
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            let hasResults = false;
-
-            document.querySelectorAll('.category-section').forEach(section => {
-                const category = section.querySelector('.category-title').textContent;
-                let categoryHasVisibleCards = false;
-
-                if (currentFilter === 'all' || currentFilter === category) {
+            // 카테고리 섹션 표시/숨김
+            const sections = document.querySelectorAll('.category-section');
+            sections.forEach(section => {
+                if (category === 'all' || section.dataset.category === category) {
                     section.classList.remove('hidden');
-                    
-                    section.querySelectorAll('.link-card').forEach(card => {
-                        const name = card.querySelector('.link-name').textContent.toLowerCase();
-                        const description = card.querySelector('.link-description').textContent.toLowerCase();
-                        
-                        if (searchTerm === '' || name.includes(searchTerm) || description.includes(searchTerm)) {
-                            card.classList.remove('hidden');
-                            categoryHasVisibleCards = true;
-                            hasResults = true;
-                        } else {
-                            card.classList.add('hidden');
-                        }
-                    });
-
-                    if (!categoryHasVisibleCards) {
-                        section.classList.add('hidden');
-                    }
                 } else {
                     section.classList.add('hidden');
                 }
             });
-
-            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
+            
+            // 검색어가 있으면 검색도 다시 실행
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm) {
+                performSearch(searchTerm);
+            }
+            
+            updateStats();
         }
 
-        function createLinkCard(link, index) {
-            const card = document.createElement('a');
-            card.href = link.url;
-            card.target = '_blank';
-            card.className = 'link-card';
-            card.style.setProperty('--card-color', link.color);
-            card.style.animationDelay = `${index * 0.04}s`;
-
-            const icon = document.createElement('div');
-            icon.className = 'link-icon';
-            icon.textContent = link.icon;
-            card.appendChild(icon);
-
-            const name = document.createElement('div');
-            name.className = 'link-name';
-            name.textContent = link.name;
-            card.appendChild(name);
-
-            const description = document.createElement('div');
-            description.className = 'link-description';
-            description.textContent = link.description;
-            card.appendChild(description);
-
-            return card;
-        }
-
-        function renderLinks() {
-            const contentDiv = document.getElementById('content');
-            const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
-
-            categoryOrder.forEach((category, idx) => {
-                const section = document.createElement('div');
-                section.className = 'category-section';
-                section.style.animationDelay = `${idx * 0.08}s`;
+        // 검색 기능
+        function performSearch(searchTerm) {
+            const term = searchTerm.toLowerCase();
+            const cards = document.querySelectorAll('.site-card');
+            
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const description = card.dataset.description;
+                const category = card.dataset.category;
                 
-                const title = document.createElement('h2');
-                title.className = 'category-title';
-                title.textContent = category;
-                section.appendChild(title);
-
-                const grid = document.createElement('div');
-                grid.className = 'links-grid';
-
-                linksData[category].forEach((link, i) => {
-                    grid.appendChild(createLinkCard(link, i));
-                });
-
-                section.appendChild(grid);
-                contentDiv.appendChild(section);
+                const matchesSearch = name.includes(term) || description.includes(term);
+                const matchesFilter = currentFilter === 'all' || category === currentFilter;
+                
+                if (matchesSearch && matchesFilter) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
             });
+            
+            updateStats();
         }
 
-        // 페이지 로드 시 실행
-        window.addEventListener('load', () => {
-            loadTheme();
-            renderLinks();
-            setupSearch();
+        // 통계 업데이트
+        function updateStats() {
+            const visibleCards = document.querySelectorAll('.site-card[style*="display: flex"], .site-card:not([style*="display: none"])');
+            const count = Array.from(visibleCards).filter(card => {
+                const computedStyle = window.getComputedStyle(card);
+                return computedStyle.display !== 'none';
+            }).length;
+            
+            document.getElementById('total-sites').textContent = count;
+        }
+
+        // 테마 변경
+        function setTheme(theme) {
+            document.body.className = `theme-${theme}`;
+            
+            // 버튼 active 상태
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.theme-btn.${theme}`).classList.add('active');
+            
+            // localStorage에 저장
+            localStorage.setItem('pandaUniverseTheme', theme);
+        }
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            // 저장된 테마 불러오기
+            const savedTheme = localStorage.getItem('pandaUniverseTheme') || 'black';
+            setTheme(savedTheme);
+            
+            // 사이트 렌더링
+            renderSites();
+            
+            // 검색 이벤트
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                performSearch(e.target.value);
+            });
         });
     </script>
 </body>
 </html>
-
