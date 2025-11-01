@@ -467,11 +467,11 @@
             color: #64748b;
         }
 
-        /* 푸터 */
+        /* 푸터 - 개선된 버전 */
         footer {
             text-align: center;
             margin-top: 50px;
-            padding: 25px;
+            padding: 30px 25px;
             border-radius: 15px;
             backdrop-filter: blur(10px);
             animation: fadeInUp 0.6s ease-out 0.3s;
@@ -498,15 +498,49 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        footer p {
-            font-size: 0.95rem;
+        .footer-brand {
+            margin-bottom: 20px;
+        }
+
+        .footer-brand h2 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .footer-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .footer-skills {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .footer-divider {
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .theme-white .footer-divider {
+            border-top-color: rgba(0,0,0,0.1);
+            border-bottom-color: rgba(0,0,0,0.1);
+        }
+
+        .footer-connect {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
         }
 
         .social-links {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-top: 15px;
             flex-wrap: wrap;
         }
 
@@ -553,6 +587,23 @@
 
         .theme-white .social-link:hover {
             background: rgba(59, 130, 246, 0.15);
+        }
+
+        .footer-stats {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 15px;
+        }
+
+        .footer-stats span {
+            opacity: 0.8;
+            margin: 0 5px;
+        }
+
+        .footer-copyright {
+            margin-top: 10px;
+            font-size: 0.75rem;
+            opacity: 0.5;
         }
 
         /* 애니메이션 */
@@ -611,6 +662,9 @@
             .link-icon { font-size: 1.5rem; }
             .link-name { font-size: 1rem; }
             .link-description { font-size: 0.75rem; }
+
+            .footer-brand h2 { font-size: 1.1rem; }
+            .footer-tagline { font-size: 0.85rem; }
         }
 
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -671,23 +725,39 @@
             <div class="no-results-text">검색 결과가 없습니다</div>
         </div>
 
+        <!-- 개선된 푸터 -->
         <footer>
-            <p><strong>Panda Universe</strong> - 이덕준</p>
-            <p style="margin-top: 8px; opacity: 0.9;">3D 모션그래픽 & 미디어 아트 크리에이터</p>
-            <div class="social-links">
-                <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
-                    🎥 YouTube
-                </a>
-                <a href="https://www.behance.net/led32684792a3" target="_blank" class="social-link">
-                    🎨 Behance
-                </a>
-                <a href="https://github.com/leedeokjun-sudo" target="_blank" class="social-link">
-                    💻 GitHub
-                </a>
+            <div class="footer-brand">
+                <h2>🐼 Panda Universe</h2>
+                <p class="footer-tagline">Curated Tools for Creative Professionals</p>
+                <p class="footer-skills">Cinema 4D • Unreal Engine • AI Tools</p>
             </div>
-            <p style="margin-top: 15px; opacity: 0.8; font-size: 0.85rem;">
-                © 2024 Panda Universe. All rights reserved.
-            </p>
+            
+            <div class="footer-divider">
+                <p class="footer-connect">Connect & Explore</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
+                        🎥 YouTube
+                    </a>
+                    <a href="https://www.behance.net/led32684792a3" target="_blank" class="social-link">
+                        🎨 Behance
+                    </a>
+                    <a href="https://github.com/leedeokjun-sudo" target="_blank" class="social-link">
+                        💻 GitHub
+                    </a>
+                </div>
+            </div>
+            
+            <div>
+                <p class="footer-stats">
+                    <span>19 Sites</span> • 
+                    <span>4 Categories</span> • 
+                    <span>Updated Monthly</span>
+                </p>
+                <p class="footer-copyright">
+                    © 2024 Panda Universe. Built with 💜 for Creators.
+                </p>
+            </div>
         </footer>
     </div>
 
@@ -859,3 +929,4 @@
     </script>
 </body>
 </html>
+
