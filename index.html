@@ -17,24 +17,7 @@
             min-height: 100vh;
             padding: 20px;
             transition: background 0.5s ease;
-        }
-
-        /* 커스텀 테마 */
-        body.theme-custom {
-            background: var(--custom-gradient);
-        }
-
-        /* 기본 테마별 배경 */
-        body.theme-black {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-        }
-
-        body.theme-blue {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-        }
-
-        body.theme-white {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--custom-gradient, linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%));
         }
 
         .container {
@@ -42,88 +25,53 @@
             margin: 0 auto;
         }
 
-        /* 테마 전환 버튼 */
-        .theme-switcher {
+        /* 컬러 피커 버튼 */
+        .color-picker-trigger {
             position: fixed;
             top: 20px;
             right: 20px;
-            display: flex;
-            gap: 10px;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .theme-btn.active {
-            border-color: #fff;
-            box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
-        }
-
-        .theme-btn.black {
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-        }
-
-        .theme-btn.blue {
-            background: linear-gradient(135deg, #0f2027, #2c5364);
-        }
-
-        .theme-btn.white {
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-        }
-
-        /* 컬러 피커 버튼 */
         .color-picker-btn {
-            width: 40px;
-            height: 40px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            border: 3px solid transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            background: conic-gradient(
-                from 0deg,
-                #ff0000 0deg 60deg,
-                #ffff00 60deg 120deg,
-                #00ff00 120deg 180deg,
-                #00ffff 180deg 240deg,
-                #0000ff 240deg 300deg,
-                #ff00ff 300deg 360deg
-            );
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             position: relative;
+            overflow: hidden;
+        }
+
+        .color-picker-btn::before {
+            content: '🎨';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
         }
 
         .color-picker-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .color-picker-btn.active {
             border-color: #fff;
             box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         /* 컬러 팔레트 패널 */
         .color-palette {
             position: fixed;
-            top: 80px;
+            top: 50px;
             right: 20px;
             width: 280px;
             background: rgba(30, 30, 30, 0.95);
@@ -252,59 +200,23 @@
             backdrop-filter: blur(10px);
             animation: fadeInDown 0.6s ease-out;
             transition: all 0.5s ease;
-        }
-
-        .theme-black header, .theme-custom header {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-blue header {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(125, 211, 252, 0.15);
-        }
-
-        .theme-white header {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         header h1 {
             font-size: 2.2rem;
             margin-bottom: 8px;
             transition: all 0.5s ease;
-        }
-
-        .theme-black header h1, .theme-custom header h1 {
             color: #ffffff;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .theme-blue header h1 {
-            color: #e0f2fe;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-        }
-
-        .theme-white header h1 {
-            color: #1e293b;
         }
 
         header p {
             font-size: 0.95rem;
             opacity: 0.9;
             transition: all 0.5s ease;
-        }
-
-        .theme-black header p, .theme-custom header p {
             color: #d1d5db;
-        }
-
-        .theme-blue header p {
-            color: #bae6fd;
-        }
-
-        .theme-white header p {
-            color: #475569;
         }
 
         header .subtitle {
@@ -332,18 +244,7 @@
             font-size: 1.8rem;
             font-weight: bold;
             transition: all 0.5s ease;
-        }
-
-        .theme-black .stat-number, .theme-custom .stat-number {
             color: #ffffff;
-        }
-
-        .theme-blue .stat-number {
-            color: #7dd3fc;
-        }
-
-        .theme-white .stat-number {
-            color: #3b82f6;
         }
 
         .stat-label {
@@ -375,24 +276,9 @@
             border: none;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-        }
-
-        .theme-black .search-input, .theme-custom .search-input {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .theme-blue .search-input {
-            background: rgba(255, 255, 255, 0.12);
-            color: #e0f2fe;
-            border: 1px solid rgba(125, 211, 252, 0.2);
-        }
-
-        .theme-white .search-input {
-            background: rgba(255, 255, 255, 0.95);
-            color: #1e293b;
-            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .search-input::placeholder {
@@ -402,22 +288,8 @@
         .search-input:focus {
             outline: none;
             transform: scale(1.02);
-        }
-
-        .theme-black .search-input:focus, .theme-custom .search-input:focus {
             background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .theme-blue .search-input:focus {
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(125, 211, 252, 0.4);
-        }
-
-        .theme-white .search-input:focus {
-            background: #ffffff;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .search-icon {
@@ -443,62 +315,21 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-        }
-
-        .theme-black .filter-btn, .theme-custom .filter-btn {
             background: rgba(255, 255, 255, 0.1);
             color: #d1d5db;
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .theme-blue .filter-btn {
-            background: rgba(255, 255, 255, 0.12);
-            color: #bae6fd;
-            border: 1px solid rgba(125, 211, 252, 0.2);
-        }
-
-        .theme-white .filter-btn {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
         .filter-btn:hover {
             transform: translateY(-2px);
-        }
-
-        .theme-black .filter-btn:hover, .theme-custom .filter-btn:hover {
             background: rgba(255, 255, 255, 0.15);
-        }
-
-        .theme-blue .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
-        }
-
-        .theme-white .filter-btn:hover {
-            background: rgba(59, 130, 246, 0.15);
         }
 
         .filter-btn.active {
             transform: scale(1.05);
-        }
-
-        .theme-black .filter-btn.active, .theme-custom .filter-btn.active {
             background: rgba(255, 255, 255, 0.25);
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .theme-blue .filter-btn.active {
-            background: rgba(125, 211, 252, 0.3);
-            color: #e0f2fe;
-            border-color: rgba(125, 211, 252, 0.5);
-        }
-
-        .theme-white .filter-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
         }
 
         /* 카테고리 섹션 */
@@ -518,24 +349,9 @@
             padding-left: 12px;
             border-left: 4px solid;
             transition: all 0.5s ease;
-        }
-
-        .theme-black .category-title, .theme-custom .category-title {
             color: #ffffff;
             border-color: #ffffff;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .theme-blue .category-title {
-            color: #e0f2fe;
-            border-color: #7dd3fc;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .theme-white .category-title {
-            color: #1e293b;
-            border-color: #3b82f6;
-            text-shadow: none;
         }
 
         /* 링크 그리드 */
@@ -555,31 +371,14 @@
             overflow: hidden;
             animation: fadeInUp 0.6s ease-out;
             animation-fill-mode: both;
-        }
-
-        .link-card.hidden {
-            display: none;
-        }
-
-        .theme-black .link-card, .theme-custom .link-card {
             background: rgba(30, 30, 30, 0.9);
             color: #e0e0e0;
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .theme-blue .link-card {
-            background: rgba(15, 32, 39, 0.85);
-            color: #e0f2fe;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-            border: 1px solid rgba(125, 211, 252, 0.2);
-        }
-
-        .theme-white .link-card {
-            background: rgba(255, 255, 255, 0.95);
-            color: #1e293b;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            border: 1px solid rgba(0, 0, 0, 0.08);
+        .link-card.hidden {
+            display: none;
         }
 
         .link-card::before {
@@ -601,23 +400,8 @@
 
         .link-card:hover {
             transform: translateY(-8px) scale(1.02);
-        }
-
-        .theme-black .link-card:hover, .theme-custom .link-card:hover {
             box-shadow: 0 15px 30px rgba(0,0,0,0.8);
             background: rgba(40, 40, 40, 0.95);
-            border-color: var(--card-color);
-        }
-
-        .theme-blue .link-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-            background: rgba(20, 40, 50, 0.95);
-            border-color: var(--card-color);
-        }
-
-        .theme-white .link-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-            background: rgba(255, 255, 255, 1);
             border-color: var(--card-color);
         }
 
@@ -645,10 +429,6 @@
             opacity: 0.9;
         }
 
-        .theme-white .link-description {
-            color: #64748b;
-        }
-
         /* 검색 결과 없음 */
         .no-results {
             text-align: center;
@@ -664,18 +444,7 @@
 
         .no-results-text {
             font-size: 1.1rem;
-        }
-
-        .theme-black .no-results-text, .theme-custom .no-results-text {
             color: #d1d5db;
-        }
-
-        .theme-blue .no-results-text {
-            color: #bae6fd;
-        }
-
-        .theme-white .no-results-text {
-            color: #64748b;
         }
 
         /* 푸터 */
@@ -687,41 +456,15 @@
             backdrop-filter: blur(10px);
             animation: fadeInUp 0.8s ease-out;
             transition: all 0.5s ease;
-        }
-
-        .theme-black footer, .theme-custom footer {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #d1d5db;
         }
 
-        .theme-blue footer {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(125, 211, 252, 0.15);
-            color: #bae6fd;
-        }
-
-        .theme-white footer {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            color: #475569;
-        }
-
         .footer-brand h2 {
             font-size: 1.4rem;
             margin-bottom: 8px;
-        }
-
-        .theme-black .footer-brand h2, .theme-custom .footer-brand h2 {
             color: #ffffff;
-        }
-
-        .theme-blue .footer-brand h2 {
-            color: #e0f2fe;
-        }
-
-        .theme-white .footer-brand h2 {
-            color: #1e293b;
         }
 
         .footer-tagline {
@@ -741,18 +484,7 @@
             margin: 25px 0;
             padding: 20px 0;
             border-top: 1px solid;
-        }
-
-        .theme-black .footer-divider, .theme-custom .footer-divider {
             border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-blue .footer-divider {
-            border-color: rgba(125, 211, 252, 0.2);
-        }
-
-        .theme-white .footer-divider {
-            border-color: rgba(0, 0, 0, 0.1);
         }
 
         .footer-connect {
@@ -777,40 +509,14 @@
             align-items: center;
             gap: 6px;
             font-size: 0.95rem;
-        }
-
-        .theme-black .social-link, .theme-custom .social-link {
             color: white;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .theme-blue .social-link {
-            color: #e0f2fe;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(125, 211, 252, 0.2);
-        }
-
-        .theme-white .social-link {
-            color: #1e293b;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
         .social-link:hover {
             transform: translateY(-2px);
-        }
-
-        .theme-black .social-link:hover, .theme-custom .social-link:hover {
             background: rgba(255, 255, 255, 0.15);
-        }
-
-        .theme-blue .social-link:hover {
-            background: rgba(255, 255, 255, 0.18);
-        }
-
-        .theme-white .social-link:hover {
-            background: rgba(59, 130, 246, 0.15);
         }
 
         .footer-stats {
@@ -855,19 +561,23 @@
 
         /* 반응형 */
         @media (max-width: 768px) {
-            .theme-switcher {
+            .color-picker-trigger {
                 top: 10px;
                 right: 10px;
-                padding: 8px;
             }
 
-            .theme-btn, .color-picker-btn {
-                width: 35px;
-                height: 35px;
+            .color-picker-btn {
+                width: 18px;
+                height: 18px;
+            }
+
+            .color-picker-btn::before {
+                font-size: 9px;
             }
 
             .color-palette {
                 right: 10px;
+                top: 40px;
                 width: calc(100% - 20px);
                 max-width: 280px;
             }
@@ -908,18 +618,15 @@
         }
     </style>
 </head>
-<body class="theme-black">
-    <!-- 테마 전환 버튼 -->
-    <div class="theme-switcher">
-        <button class="theme-btn black active" onclick="setTheme('black')" title="다크 테마"></button>
-        <button class="theme-btn blue" onclick="setTheme('blue')" title="딥 블루 테마"></button>
-        <button class="theme-btn white" onclick="setTheme('white')" title="화이트 테마"></button>
-        <button class="color-picker-btn" onclick="toggleColorPalette()" title="커스텀 컬러">🎨</button>
+<body>
+    <!-- 컬러 피커 버튼 -->
+    <div class="color-picker-trigger">
+        <div class="color-picker-btn" onclick="toggleColorPalette()" title="배경색 변경"></div>
     </div>
 
     <!-- 컬러 팔레트 패널 -->
     <div class="color-palette" id="colorPalette">
-        <div class="palette-title">🎨 컬러 테마 선택</div>
+        <div class="palette-title">🎨 배경 컬러 선택</div>
         
         <div class="preset-colors" id="presetColors"></div>
         
@@ -1042,13 +749,13 @@
             ]
         };
 
-        // 프리셋 컬러 팔레트
+        // 프리셋 컬러 팔레트 (더 세련된 색상)
         const presetColors = [
+            '#1a1a1a', '#2d2d2d', '#3a3a3a', '#4a4a4a',
+            '#0f2027', '#1a3a52', '#2c5364', '#1e3c72',
             '#667eea', '#764ba2', '#f093fb', '#4facfe',
-            '#43e97b', '#fa709a', '#fee140', '#30cfd0',
-            '#a8edea', '#fed6e3', '#ff9a56', '#ee5a6f',
-            '#c471f5', '#fa71cd', '#6a11cb', '#2575fc',
-            '#f857a6', '#ff5858', '#56ab2f', '#a8ff78'
+            '#43e97b', '#38f9d7', '#fee140', '#fa709a',
+            '#ff6a00', '#ee0979', '#00c6ff', '#0072ff'
         ];
 
         let currentFilter = 'all';
@@ -1116,55 +823,25 @@
             const color = document.getElementById('customColorPicker').value;
             const darkerColor = adjustColor(color, -30);
             
-            document.body.className = 'theme-custom';
             document.body.style.setProperty('--custom-gradient', 
                 `linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%)`);
             
-            // 모든 테마 버튼 비활성화
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector('.color-picker-btn').classList.add('active');
-            
             // 저장
-            localStorage.setItem('theme', 'custom');
             localStorage.setItem('customColor', color);
             
             // 팔레트 닫기
             toggleColorPalette();
         }
 
-        // 테마 전환 기능
-        function setTheme(theme) {
-            const body = document.body;
-            body.className = 'theme-' + theme;
-            
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector('.color-picker-btn').classList.remove('active');
-            
-            if (theme !== 'custom') {
-                document.querySelector('.theme-btn.' + theme).classList.add('active');
-            }
-            
-            localStorage.setItem('theme', theme);
-        }
-
         function loadTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'black';
             const savedColor = localStorage.getItem('customColor');
             
-            if (savedTheme === 'custom' && savedColor) {
+            if (savedColor) {
                 const darkerColor = adjustColor(savedColor, -30);
-                document.body.className = 'theme-custom';
                 document.body.style.setProperty('--custom-gradient', 
                     `linear-gradient(135deg, ${savedColor} 0%, ${darkerColor} 100%)`);
-                document.querySelector('.color-picker-btn').classList.add('active');
                 document.getElementById('customColorPicker').value = savedColor;
                 document.getElementById('colorCode').value = savedColor;
-            } else {
-                setTheme(savedTheme);
             }
         }
 
