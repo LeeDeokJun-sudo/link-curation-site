@@ -18,11 +18,139 @@
             padding: 20px;
             transition: background 0.5s ease;
             background: var(--custom-gradient, linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%));
+            overflow-x: hidden;
+        }
+
+        /* 스플래시 스크린 */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 1s ease 2.5s forwards;
+        }
+
+        .splash-logo {
+            font-size: 5rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        .splash-text {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.5s forwards;
+        }
+
+        .splash-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.8s forwards;
+        }
+
+        .splash-loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            margin-top: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 계절 테마 */
+        .season-decoration {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 눈/벚꽃/낙엽 애니메이션 */
+        .particle {
+            position: fixed;
+            top: -10px;
+            font-size: 1.5rem;
+            opacity: 0.8;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 언어 전환 버튼 */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-btn {
+            padding: 5px 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
         }
 
         /* 컬러 피커 버튼 */
@@ -361,7 +489,7 @@
             gap: 15px;
         }
 
-        /* 링크 카드 */
+        /* 링크 카드 - 3D 효과 */
         .link-card {
             border-radius: 12px;
             padding: 18px;
@@ -375,6 +503,8 @@
             color: #e0e0e0;
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .link-card.hidden {
@@ -399,7 +529,7 @@
         }
 
         .link-card:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-8px) rotateX(5deg) rotateY(5deg) scale(1.02);
             box-shadow: 0 15px 30px rgba(0,0,0,0.8);
             background: rgba(40, 40, 40, 0.95);
             border-color: var(--card-color);
@@ -561,6 +691,17 @@
 
         /* 반응형 */
         @media (max-width: 768px) {
+            .language-switcher {
+                top: 10px;
+                left: 10px;
+                padding: 4px;
+            }
+
+            .lang-btn {
+                padding: 4px 10px;
+                font-size: 0.75rem;
+            }
+
             .color-picker-trigger {
                 top: 10px;
                 right: 10px;
@@ -580,6 +721,14 @@
                 top: 40px;
                 width: calc(100% - 20px);
                 max-width: 280px;
+            }
+
+            .splash-logo {
+                font-size: 3rem;
+            }
+
+            .splash-text {
+                font-size: 1.5rem;
             }
 
             header h1 { font-size: 1.5rem; }
@@ -619,41 +768,55 @@
     </style>
 </head>
 <body>
+    <!-- 스플래시 스크린 -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">🐼</div>
+        <div class="splash-text" data-i18n="splash-title">Panda Universe</div>
+        <div class="splash-subtitle" data-i18n="splash-subtitle">Loading your creative toolkit...</div>
+        <div class="splash-loader"></div>
+    </div>
+
+    <!-- 언어 전환 버튼 -->
+    <div class="language-switcher">
+        <button class="lang-btn active" onclick="setLanguage('ko')" data-lang="ko">한국어</button>
+        <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">English</button>
+    </div>
+
     <!-- 컬러 피커 버튼 -->
     <div class="color-picker-trigger">
-        <div class="color-picker-btn" onclick="toggleColorPalette()" title="배경색 변경"></div>
+        <div class="color-picker-btn" onclick="toggleColorPalette()" data-i18n-title="color-picker"></div>
     </div>
 
     <!-- 컬러 팔레트 패널 -->
     <div class="color-palette" id="colorPalette">
-        <div class="palette-title">🎨 배경 컬러 선택</div>
+        <div class="palette-title" data-i18n="palette-title">🎨 배경 컬러 선택</div>
         
         <div class="preset-colors" id="presetColors"></div>
         
         <div class="custom-color-section">
-            <label class="custom-color-label">✨ 커스텀 컬러</label>
+            <label class="custom-color-label" data-i18n="custom-color">✨ 커스텀 컬러</label>
             <div class="color-input-wrapper">
                 <input type="color" id="customColorPicker" class="color-input" value="#667eea">
                 <input type="text" id="colorCode" class="color-code" value="#667eea" readonly>
             </div>
-            <button class="apply-btn" onclick="applyCustomColor()">적용하기</button>
+            <button class="apply-btn" onclick="applyCustomColor()" data-i18n="apply-btn">적용하기</button>
         </div>
     </div>
 
     <div class="container">
         <header>
             <h1>🐼 Panda Universe</h1>
-            <p>3D Motion Graphics & Media Art 레퍼런스 큐레이션</p>
-            <p class="subtitle">Cinema 4D, Unreal Engine, AI Tools로 창작하는 크리에이터의 필수 링크 모음</p>
+            <p data-i18n="header-subtitle">3D Motion Graphics & Media Art 레퍼런스 큐레이션</p>
+            <p class="subtitle" data-i18n="header-description">Cinema 4D, Unreal Engine, AI Tools로 창작하는 크리에이터의 필수 링크 모음</p>
             
             <div class="stats">
                 <div class="stat-item">
                     <span class="stat-number" id="totalLinks">22</span>
-                    <span class="stat-label">큐레이션 사이트</span>
+                    <span class="stat-label" data-i18n="stat-sites">큐레이션 사이트</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">4</span>
-                    <span class="stat-label">카테고리</span>
+                    <span class="stat-label" data-i18n="stat-categories">카테고리</span>
                 </div>
             </div>
         </header>
@@ -661,34 +824,34 @@
         <!-- 검색 및 필터 -->
         <div class="controls">
             <div class="search-box">
-                <input type="text" class="search-input" id="searchInput" placeholder="사이트 검색...">
+                <input type="text" class="search-input" id="searchInput" data-i18n-placeholder="search-placeholder">
                 <span class="search-icon">🔍</span>
             </div>
             <div class="category-filters">
-                <button class="filter-btn active" onclick="filterCategory('all')">전체</button>
-                <button class="filter-btn" onclick="filterCategory('AI TOOLS')">AI TOOLS</button>
-                <button class="filter-btn" onclick="filterCategory('CAREER & JOB')">CAREER & JOB</button>
-                <button class="filter-btn" onclick="filterCategory('VIDEO')">VIDEO</button>
-                <button class="filter-btn" onclick="filterCategory('DESIGN & PORTFOLIO')">DESIGN</button>
+                <button class="filter-btn active" onclick="filterCategory('all')" data-i18n="filter-all">전체</button>
+                <button class="filter-btn" onclick="filterCategory('AI TOOLS')" data-i18n="filter-ai">AI TOOLS</button>
+                <button class="filter-btn" onclick="filterCategory('CAREER & JOB')" data-i18n="filter-career">CAREER & JOB</button>
+                <button class="filter-btn" onclick="filterCategory('VIDEO')" data-i18n="filter-video">VIDEO</button>
+                <button class="filter-btn" onclick="filterCategory('DESIGN & PORTFOLIO')" data-i18n="filter-design">DESIGN</button>
             </div>
         </div>
 
         <div id="content"></div>
         <div id="noResults" class="no-results" style="display: none;">
             <div class="no-results-icon">🔍</div>
-            <div class="no-results-text">검색 결과가 없습니다</div>
+            <div class="no-results-text" data-i18n="no-results">검색 결과가 없습니다</div>
         </div>
 
         <!-- 개선된 푸터 -->
         <footer>
             <div class="footer-brand">
                 <h2>🐼 Panda Universe</h2>
-                <p class="footer-tagline">Curated Tools for Creative Professionals</p>
+                <p class="footer-tagline" data-i18n="footer-tagline">Curated Tools for Creative Professionals</p>
                 <p class="footer-skills">Cinema 4D • Unreal Engine • AI Tools</p>
             </div>
             
             <div class="footer-divider">
-                <p class="footer-connect">Connect & Explore</p>
+                <p class="footer-connect" data-i18n="footer-connect">Connect & Explore</p>
                 <div class="social-links">
                     <a href="https://www.youtube.com/@C4DUnreal" target="_blank" class="social-link">
                         🎥 YouTube
@@ -704,9 +867,9 @@
             
             <div>
                 <p class="footer-stats">
-                    <span>22 Sites</span> • 
-                    <span>4 Categories</span> • 
-                    <span>Updated Monthly</span>
+                    <span>22 <span data-i18n="footer-sites">Sites</span></span> • 
+                    <span>4 <span data-i18n="footer-categories-label">Categories</span></span> • 
+                    <span data-i18n="footer-updated">Updated Monthly</span>
                 </p>
                 <p class="footer-copyright">
                     © 2024 Panda Universe. Built with 💜 for Creators.
@@ -716,40 +879,92 @@
     </div>
 
     <script>
+        // 다국어 번역 데이터
+        const translations = {
+            ko: {
+                'splash-title': 'Panda Universe',
+                'splash-subtitle': '크리에이티브 툴킷 로딩 중...',
+                'color-picker': '배경색 변경',
+                'palette-title': '🎨 배경 컬러 선택',
+                'custom-color': '✨ 커스텀 컬러',
+                'apply-btn': '적용하기',
+                'header-subtitle': '3D Motion Graphics & Media Art 레퍼런스 큐레이션',
+                'header-description': 'Cinema 4D, Unreal Engine, AI Tools로 창작하는 크리에이터의 필수 링크 모음',
+                'stat-sites': '큐레이션 사이트',
+                'stat-categories': '카테고리',
+                'search-placeholder': '사이트 검색...',
+                'filter-all': '전체',
+                'filter-ai': 'AI TOOLS',
+                'filter-career': 'CAREER & JOB',
+                'filter-video': 'VIDEO',
+                'filter-design': 'DESIGN',
+                'no-results': '검색 결과가 없습니다',
+                'footer-tagline': 'Curated Tools for Creative Professionals',
+                'footer-connect': 'Connect & Explore',
+                'footer-sites': 'Sites',
+                'footer-categories-label': 'Categories',
+                'footer-updated': 'Updated Monthly'
+            },
+            en: {
+                'splash-title': 'Panda Universe',
+                'splash-subtitle': 'Loading your creative toolkit...',
+                'color-picker': 'Change background color',
+                'palette-title': '🎨 Select Background Color',
+                'custom-color': '✨ Custom Color',
+                'apply-btn': 'Apply',
+                'header-subtitle': '3D Motion Graphics & Media Art Reference Curation',
+                'header-description': 'Essential links for creators working with Cinema 4D, Unreal Engine, AI Tools',
+                'stat-sites': 'Curated Sites',
+                'stat-categories': 'Categories',
+                'search-placeholder': 'Search sites...',
+                'filter-all': 'All',
+                'filter-ai': 'AI TOOLS',
+                'filter-career': 'CAREER & JOB',
+                'filter-video': 'VIDEO',
+                'filter-design': 'DESIGN',
+                'no-results': 'No results found',
+                'footer-tagline': 'Curated Tools for Creative Professionals',
+                'footer-connect': 'Connect & Explore',
+                'footer-sites': 'Sites',
+                'footer-categories-label': 'Categories',
+                'footer-updated': 'Updated Monthly'
+            }
+        };
+
         const linksData = {
             'AI TOOLS': [
-                { name: 'ChatGPT', url: 'https://chat.openai.com/', description: 'OpenAI의 대화형 AI 챗봇', icon: '🤖', color: '#10A37F' },
-                { name: 'Claude', url: 'https://claude.ai/', description: 'Anthropic의 AI 어시스턴트', icon: '🧠', color: '#CC9B7A' },
-                { name: 'Genspark', url: 'https://www.genspark.ai/', description: '차세대 AI 검색 엔진', icon: '⚡', color: '#FF6B35' },
-                { name: 'Sora', url: 'https://openai.com/sora', description: 'OpenAI의 텍스트-비디오 생성 AI', icon: '✨', color: '#FF6B6B' },
-                { name: 'Midjourney', url: 'https://www.midjourney.com/', description: 'AI 기반 이미지 생성 도구', icon: '🎨', color: '#4F46E5' },
-                { name: 'Firefly', url: 'https://www.adobe.com/products/firefly.html', description: 'Adobe의 크리에이티브 AI 도구', icon: '🔥', color: '#FF0050' },
-                { name: 'Kling AI', url: 'https://klingai.com/', description: '중국 Kuaishou의 AI 비디오 생성 플랫폼', icon: '🎬', color: '#FF4500' },
-                { name: 'Higgsfield', url: 'https://higgsfield.ai/', description: '시네마틱 AI 비디오 & 이미지 생성 플랫폼', icon: '🎥', color: '#9333EA' },
-                { name: 'Pika', url: 'https://pika.art/', description: 'AI 비디오 생성 플랫폼', icon: '📹', color: '#8B5CF6' },
-                { name: 'Runway', url: 'https://runwayml.com/', description: 'AI 비디오 편집 및 생성 도구', icon: '🎞️', color: '#00DDB3' }
+                { name: 'ChatGPT', url: 'https://chat.openai.com/', description: 'OpenAI의 대화형 AI 챗봇', descriptionEn: 'OpenAI conversational AI chatbot', icon: '🤖', color: '#10A37F' },
+                { name: 'Claude', url: 'https://claude.ai/', description: 'Anthropic의 AI 어시스턴트', descriptionEn: 'Anthropic AI assistant', icon: '🧠', color: '#CC9B7A' },
+                { name: 'Genspark', url: 'https://www.genspark.ai/', description: '차세대 AI 검색 엔진', descriptionEn: 'Next-generation AI search engine', icon: '⚡', color: '#FF6B35' },
+                { name: 'Sora', url: 'https://openai.com/sora', description: 'OpenAI의 텍스트-비디오 생성 AI', descriptionEn: 'OpenAI text-to-video AI', icon: '✨', color: '#FF6B6B' },
+                { name: 'Midjourney', url: 'https://www.midjourney.com/', description: 'AI 기반 이미지 생성 도구', descriptionEn: 'AI-powered image generation tool', icon: '🎨', color: '#4F46E5' },
+                { name: 'Firefly', url: 'https://www.adobe.com/products/firefly.html', description: 'Adobe의 크리에이티브 AI 도구', descriptionEn: 'Adobe creative AI tool', icon: '🔥', color: '#FF0050' },
+                { name: 'Kling AI', url: 'https://klingai.com/', description: '중국 Kuaishou의 AI 비디오 생성 플랫폼', descriptionEn: 'Kuaishou AI video generation platform', icon: '🎬', color: '#FF4500' },
+                { name: 'Higgsfield', url: 'https://higgsfield.ai/', description: '시네마틱 AI 비디오 & 이미지 생성 플랫폼', descriptionEn: 'Cinematic AI video & image generation platform', icon: '🎥', color: '#9333EA' },
+                { name: 'Pika', url: 'https://pika.art/', description: 'AI 비디오 생성 플랫폼', descriptionEn: 'AI video generation platform', icon: '📹', color: '#8B5CF6' },
+                { name: 'Runway', url: 'https://runwayml.com/', description: 'AI 비디오 편집 및 생성 도구', descriptionEn: 'AI video editing and generation tool', icon: '🎞️', color: '#00DDB3' }
             ],
             'CAREER & JOB': [
-                { name: 'LinkedIn', url: 'https://www.linkedin.com/', description: '전문가 네트워킹 플랫폼', icon: '💼', color: '#0A66C2' },
-                { name: '사람인', url: 'https://www.saramin.co.kr/', description: '종합 취업 정보 사이트', icon: '🏢', color: '#0072BC' },
-                { name: '원티드', url: 'https://www.wanted.co.kr/', description: 'IT/스타트업 전문 채용', icon: '🎯', color: '#3366FF' },
-                { name: 'Indeed', url: 'https://www.indeed.com/', description: '글로벌 채용 검색 엔진', icon: '🌐', color: '#2557A7' },
-                { name: '잡코리아', url: 'https://www.jobkorea.co.kr/', description: '국내 대표 취업 포털', icon: '💼', color: '#0A68FF' },
-                { name: '리드미컬 카페', url: 'https://cafe.naver.com/rhythmical', description: '디자이너 & 크리에이터 취업 커뮤니티', icon: '☕', color: '#03C75A' }
+                { name: 'LinkedIn', url: 'https://www.linkedin.com/', description: '전문가 네트워킹 플랫폼', descriptionEn: 'Professional networking platform', icon: '💼', color: '#0A66C2' },
+                { name: '사람인', url: 'https://www.saramin.co.kr/', description: '종합 취업 정보 사이트', descriptionEn: 'Korean job search portal', icon: '🏢', color: '#0072BC' },
+                { name: '원티드', url: 'https://www.wanted.co.kr/', description: 'IT/스타트업 전문 채용', descriptionEn: 'IT/Startup specialized recruitment', icon: '🎯', color: '#3366FF' },
+                { name: 'Indeed', url: 'https://www.indeed.com/', description: '글로벌 채용 검색 엔진', descriptionEn: 'Global job search engine', icon: '🌐', color: '#2557A7' },
+                { name: '잡코리아', url: 'https://www.jobkorea.co.kr/', description: '국내 대표 취업 포털', descriptionEn: 'Leading Korean job portal', icon: '💼', color: '#0A68FF' },
+                { name: '리드미컬 카페', url: 'https://cafe.naver.com/rhythmical', description: '디자이너 & 크리에이터 취업 커뮤니티', descriptionEn: 'Designer & Creator job community', icon: '☕', color: '#03C75A' }
             ],
             'VIDEO': [
-                { name: 'YouTube', url: 'https://www.youtube.com/', description: '세계 최대 동영상 플랫폼', icon: '🎥', color: '#FF0000' },
-                { name: 'Vimeo', url: 'https://vimeo.com/', description: '고품질 비디오 공유 플랫폼', icon: '📺', color: '#1AB7EA' }
+                { name: 'YouTube', url: 'https://www.youtube.com/', description: '세계 최대 동영상 플랫폼', descriptionEn: "World's largest video platform", icon: '🎥', color: '#FF0000' },
+                { name: 'Vimeo', url: 'https://vimeo.com/', description: '고품질 비디오 공유 플랫폼', descriptionEn: 'High-quality video sharing platform', icon: '📺', color: '#1AB7EA' }
             ],
             'DESIGN & PORTFOLIO': [
-                { name: 'Behance', url: 'https://www.behance.net/', description: 'Adobe의 크리에이티브 포트폴리오 플랫폼', icon: '🎨', color: '#1769FF' },
-                { name: 'Dribbble', url: 'https://dribbble.com/', description: '디자이너 커뮤니티 및 포트폴리오', icon: '🏀', color: '#EA4C89' },
-                { name: 'Awwwards', url: 'https://www.awwwards.com/', description: '최신 웹 디자인 트렌드 레퍼런스', icon: '🏆', color: '#FACC15' },
-                { name: 'Pinterest', url: 'https://www.pinterest.com/', description: '비주얼 아이디어 발견 플랫폼', icon: '📌', color: '#E60023' }
+                { name: 'Behance', url: 'https://www.behance.net/', description: 'Adobe의 크리에이티브 포트폴리오 플랫폼', descriptionEn: 'Adobe creative portfolio platform', icon: '🎨', color: '#1769FF' },
+                { name: 'Dribbble', url: 'https://dribbble.com/', description: '디자이너 커뮤니티 및 포트폴리오', descriptionEn: 'Designer community and portfolio', icon: '🏀', color: '#EA4C89' },
+                { name: 'Awwwards', url: 'https://www.awwwards.com/', description: '최신 웹 디자인 트렌드 레퍼런스', descriptionEn: 'Latest web design trends reference', icon: '🏆', color: '#FACC15' },
+                { name: 'Pinterest', url: 'https://www.pinterest.com/', description: '비주얼 아이디어 발견 플랫폼', descriptionEn: 'Visual idea discovery platform', icon: '📌', color: '#E60023' }
             ]
         };
 
-        // 프리셋 컬러 팔레트 (더 세련된 색상)
+        // 프리셋 컬러 팔레트
         const presetColors = [
             '#1a1a1a', '#2d2d2d', '#3a3a3a', '#4a4a4a',
             '#0f2027', '#1a3a52', '#2c5364', '#1e3c72',
@@ -759,6 +974,99 @@
         ];
 
         let currentFilter = 'all';
+        let currentLanguage = 'ko';
+
+        // 계절 테마 감지
+        function getSeason() {
+            const month = new Date().getMonth() + 1;
+            const day = new Date().getDate();
+            
+            // 특별 이벤트
+            if (month === 12 && day >= 24 && day <= 25) return 'christmas';
+            if (month === 10 && day === 31) return 'halloween';
+            if (month === 1 && day === 1) return 'newyear';
+            
+            // 계절
+            if (month >= 3 && month <= 5) return 'spring';
+            if (month >= 6 && month <= 8) return 'summer';
+            if (month >= 9 && month <= 11) return 'fall';
+            return 'winter';
+        }
+
+        // 계절 파티클 생성
+        function createSeasonalParticles() {
+            const season = getSeason();
+            const particles = {
+                'spring': '🌸',
+                'summer': '☀️',
+                'fall': '🍂',
+                'winter': '❄️',
+                'christmas': '🎄',
+                'halloween': '🎃',
+                'newyear': '🎆'
+            };
+
+            const emoji = particles[season];
+            const count = season === 'christmas' || season === 'halloween' ? 15 : 20;
+
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.textContent = emoji;
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    document.body.appendChild(particle);
+
+                    setTimeout(() => particle.remove(), 8000);
+                }, i * 200);
+            }
+
+            // 반복 생성
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emoji;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 8000);
+            }, 3000);
+        }
+
+        // 언어 전환
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+
+            // 버튼 활성화
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
+
+            // 텍스트 번역
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = translations[lang][key];
+            });
+
+            // placeholder 번역
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = translations[lang][key];
+            });
+
+            // title 번역
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                el.title = translations[lang][key];
+            });
+
+            // 링크 다시 렌더링
+            renderLinks();
+        }
 
         // 프리셋 컬러 렌더링
         function renderPresetColors() {
@@ -826,10 +1134,7 @@
             document.body.style.setProperty('--custom-gradient', 
                 `linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%)`);
             
-            // 저장
             localStorage.setItem('customColor', color);
-            
-            // 팔레트 닫기
             toggleColorPalette();
         }
 
@@ -921,7 +1226,7 @@
 
             const description = document.createElement('div');
             description.className = 'link-description';
-            description.textContent = link.description;
+            description.textContent = currentLanguage === 'ko' ? link.description : link.descriptionEn;
             card.appendChild(description);
 
             return card;
@@ -929,6 +1234,7 @@
 
         function renderLinks() {
             const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = '';
             const categoryOrder = ['AI TOOLS', 'CAREER & JOB', 'VIDEO', 'DESIGN & PORTFOLIO'];
 
             categoryOrder.forEach((category, idx) => {
@@ -955,10 +1261,20 @@
 
         // 페이지 로드 시 실행
         window.addEventListener('load', () => {
+            // 스플래시 스크린 숨기기
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.display = 'none';
+            }, 3000);
+
+            // 저장된 언어 불러오기
+            const savedLanguage = localStorage.getItem('language') || 'ko';
+            setLanguage(savedLanguage);
+
             renderPresetColors();
             loadTheme();
             renderLinks();
             setupSearch();
+            createSeasonalParticles();
         });
     </script>
 </body>
