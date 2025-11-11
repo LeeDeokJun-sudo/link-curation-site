@@ -19,7 +19,12 @@
             transition: background 0.5s ease;
         }
 
-        /* 테마별 배경 */
+        /* 커스텀 테마 */
+        body.theme-custom {
+            background: var(--custom-gradient);
+        }
+
+        /* 기본 테마별 배경 */
         body.theme-black {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         }
@@ -84,6 +89,160 @@
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
         }
 
+        /* 컬러 피커 버튼 */
+        .color-picker-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            background: conic-gradient(
+                from 0deg,
+                #ff0000 0deg 60deg,
+                #ffff00 60deg 120deg,
+                #00ff00 120deg 180deg,
+                #00ffff 180deg 240deg,
+                #0000ff 240deg 300deg,
+                #ff00ff 300deg 360deg
+            );
+            position: relative;
+        }
+
+        .color-picker-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .color-picker-btn.active {
+            border-color: #fff;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+        }
+
+        /* 컬러 팔레트 패널 */
+        .color-palette {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 280px;
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            animation: slideInDown 0.3s ease-out;
+        }
+
+        .color-palette.show {
+            display: block;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .palette-title {
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preset-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .preset-color:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .preset-color.selected {
+            border-color: #fff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .custom-color-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+        }
+
+        .custom-color-label {
+            color: #d1d5db;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .color-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-input {
+            width: 60px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .color-code {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .apply-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
         /* 헤더 */
         header {
             text-align: center;
@@ -95,7 +254,7 @@
             transition: all 0.5s ease;
         }
 
-        .theme-black header {
+        .theme-black header, .theme-custom header {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -116,7 +275,7 @@
             transition: all 0.5s ease;
         }
 
-        .theme-black header h1 {
+        .theme-black header h1, .theme-custom header h1 {
             color: #ffffff;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
@@ -136,7 +295,7 @@
             transition: all 0.5s ease;
         }
 
-        .theme-black header p {
+        .theme-black header p, .theme-custom header p {
             color: #d1d5db;
         }
 
@@ -175,7 +334,7 @@
             transition: all 0.5s ease;
         }
 
-        .theme-black .stat-number {
+        .theme-black .stat-number, .theme-custom .stat-number {
             color: #ffffff;
         }
 
@@ -218,7 +377,7 @@
             transition: all 0.3s ease;
         }
 
-        .theme-black .search-input {
+        .theme-black .search-input, .theme-custom .search-input {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -245,7 +404,7 @@
             transform: scale(1.02);
         }
 
-        .theme-black .search-input:focus {
+        .theme-black .search-input:focus, .theme-custom .search-input:focus {
             background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.3);
         }
@@ -286,7 +445,7 @@
             transition: all 0.3s ease;
         }
 
-        .theme-black .filter-btn {
+        .theme-black .filter-btn, .theme-custom .filter-btn {
             background: rgba(255, 255, 255, 0.1);
             color: #d1d5db;
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -308,7 +467,7 @@
             transform: translateY(-2px);
         }
 
-        .theme-black .filter-btn:hover {
+        .theme-black .filter-btn:hover, .theme-custom .filter-btn:hover {
             background: rgba(255, 255, 255, 0.15);
         }
 
@@ -324,7 +483,7 @@
             transform: scale(1.05);
         }
 
-        .theme-black .filter-btn.active {
+        .theme-black .filter-btn.active, .theme-custom .filter-btn.active {
             background: rgba(255, 255, 255, 0.25);
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.4);
@@ -361,7 +520,7 @@
             transition: all 0.5s ease;
         }
 
-        .theme-black .category-title {
+        .theme-black .category-title, .theme-custom .category-title {
             color: #ffffff;
             border-color: #ffffff;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
@@ -402,7 +561,7 @@
             display: none;
         }
 
-        .theme-black .link-card {
+        .theme-black .link-card, .theme-custom .link-card {
             background: rgba(30, 30, 30, 0.9);
             color: #e0e0e0;
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
@@ -444,7 +603,7 @@
             transform: translateY(-8px) scale(1.02);
         }
 
-        .theme-black .link-card:hover {
+        .theme-black .link-card:hover, .theme-custom .link-card:hover {
             box-shadow: 0 15px 30px rgba(0,0,0,0.8);
             background: rgba(40, 40, 40, 0.95);
             border-color: var(--card-color);
@@ -507,7 +666,7 @@
             font-size: 1.1rem;
         }
 
-        .theme-black .no-results-text {
+        .theme-black .no-results-text, .theme-custom .no-results-text {
             color: #d1d5db;
         }
 
@@ -530,7 +689,7 @@
             transition: all 0.5s ease;
         }
 
-        .theme-black footer {
+        .theme-black footer, .theme-custom footer {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #d1d5db;
@@ -553,7 +712,7 @@
             margin-bottom: 8px;
         }
 
-        .theme-black .footer-brand h2 {
+        .theme-black .footer-brand h2, .theme-custom .footer-brand h2 {
             color: #ffffff;
         }
 
@@ -584,7 +743,7 @@
             border-top: 1px solid;
         }
 
-        .theme-black .footer-divider {
+        .theme-black .footer-divider, .theme-custom .footer-divider {
             border-color: rgba(255, 255, 255, 0.1);
         }
 
@@ -620,7 +779,7 @@
             font-size: 0.95rem;
         }
 
-        .theme-black .social-link {
+        .theme-black .social-link, .theme-custom .social-link {
             color: white;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -642,7 +801,7 @@
             transform: translateY(-2px);
         }
 
-        .theme-black .social-link:hover {
+        .theme-black .social-link:hover, .theme-custom .social-link:hover {
             background: rgba(255, 255, 255, 0.15);
         }
 
@@ -702,9 +861,15 @@
                 padding: 8px;
             }
 
-            .theme-btn {
+            .theme-btn, .color-picker-btn {
                 width: 35px;
                 height: 35px;
+            }
+
+            .color-palette {
+                right: 10px;
+                width: calc(100% - 20px);
+                max-width: 280px;
             }
 
             header h1 { font-size: 1.5rem; }
@@ -749,6 +914,23 @@
         <button class="theme-btn black active" onclick="setTheme('black')" title="다크 테마"></button>
         <button class="theme-btn blue" onclick="setTheme('blue')" title="딥 블루 테마"></button>
         <button class="theme-btn white" onclick="setTheme('white')" title="화이트 테마"></button>
+        <button class="color-picker-btn" onclick="toggleColorPalette()" title="커스텀 컬러">🎨</button>
+    </div>
+
+    <!-- 컬러 팔레트 패널 -->
+    <div class="color-palette" id="colorPalette">
+        <div class="palette-title">🎨 컬러 테마 선택</div>
+        
+        <div class="preset-colors" id="presetColors"></div>
+        
+        <div class="custom-color-section">
+            <label class="custom-color-label">✨ 커스텀 컬러</label>
+            <div class="color-input-wrapper">
+                <input type="color" id="customColorPicker" class="color-input" value="#667eea">
+                <input type="text" id="colorCode" class="color-code" value="#667eea" readonly>
+            </div>
+            <button class="apply-btn" onclick="applyCustomColor()">적용하기</button>
+        </div>
     </div>
 
     <div class="container">
@@ -860,7 +1042,97 @@
             ]
         };
 
+        // 프리셋 컬러 팔레트
+        const presetColors = [
+            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+            '#43e97b', '#fa709a', '#fee140', '#30cfd0',
+            '#a8edea', '#fed6e3', '#ff9a56', '#ee5a6f',
+            '#c471f5', '#fa71cd', '#6a11cb', '#2575fc',
+            '#f857a6', '#ff5858', '#56ab2f', '#a8ff78'
+        ];
+
         let currentFilter = 'all';
+
+        // 프리셋 컬러 렌더링
+        function renderPresetColors() {
+            const container = document.getElementById('presetColors');
+            presetColors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'preset-color';
+                colorDiv.style.background = `linear-gradient(135deg, ${color}, ${adjustColor(color, -20)})`;
+                colorDiv.onclick = () => selectPresetColor(color, colorDiv);
+                container.appendChild(colorDiv);
+            });
+        }
+
+        // 색상 밝기 조정 함수
+        function adjustColor(color, amount) {
+            const clamp = (val) => Math.min(Math.max(val, 0), 255);
+            const num = parseInt(color.replace('#', ''), 16);
+            const r = clamp((num >> 16) + amount);
+            const g = clamp(((num >> 8) & 0x00FF) + amount);
+            const b = clamp((num & 0x0000FF) + amount);
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+
+        // 프리셋 컬러 선택
+        function selectPresetColor(color, element) {
+            document.querySelectorAll('.preset-color').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('customColorPicker').value = color;
+            document.getElementById('colorCode').value = color;
+        }
+
+        // 컬러 피커 토글
+        function toggleColorPalette() {
+            const palette = document.getElementById('colorPalette');
+            const pickerBtn = document.querySelector('.color-picker-btn');
+            palette.classList.toggle('show');
+            pickerBtn.classList.toggle('active');
+        }
+
+        // 외부 클릭 시 팔레트 닫기
+        document.addEventListener('click', (e) => {
+            const palette = document.getElementById('colorPalette');
+            const pickerBtn = document.querySelector('.color-picker-btn');
+            if (!palette.contains(e.target) && !pickerBtn.contains(e.target)) {
+                palette.classList.remove('show');
+                pickerBtn.classList.remove('active');
+            }
+        });
+
+        // 커스텀 컬러 입력 이벤트
+        document.addEventListener('DOMContentLoaded', () => {
+            const colorPicker = document.getElementById('customColorPicker');
+            const colorCode = document.getElementById('colorCode');
+            
+            colorPicker.addEventListener('input', (e) => {
+                colorCode.value = e.target.value;
+            });
+        });
+
+        // 커스텀 컬러 적용
+        function applyCustomColor() {
+            const color = document.getElementById('customColorPicker').value;
+            const darkerColor = adjustColor(color, -30);
+            
+            document.body.className = 'theme-custom';
+            document.body.style.setProperty('--custom-gradient', 
+                `linear-gradient(135deg, ${color} 0%, ${darkerColor} 100%)`);
+            
+            // 모든 테마 버튼 비활성화
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.color-picker-btn').classList.add('active');
+            
+            // 저장
+            localStorage.setItem('theme', 'custom');
+            localStorage.setItem('customColor', color);
+            
+            // 팔레트 닫기
+            toggleColorPalette();
+        }
 
         // 테마 전환 기능
         function setTheme(theme) {
@@ -870,14 +1142,30 @@
             document.querySelectorAll('.theme-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            document.querySelector('.theme-btn.' + theme).classList.add('active');
+            document.querySelector('.color-picker-btn').classList.remove('active');
+            
+            if (theme !== 'custom') {
+                document.querySelector('.theme-btn.' + theme).classList.add('active');
+            }
             
             localStorage.setItem('theme', theme);
         }
 
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme') || 'black';
-            setTheme(savedTheme);
+            const savedColor = localStorage.getItem('customColor');
+            
+            if (savedTheme === 'custom' && savedColor) {
+                const darkerColor = adjustColor(savedColor, -30);
+                document.body.className = 'theme-custom';
+                document.body.style.setProperty('--custom-gradient', 
+                    `linear-gradient(135deg, ${savedColor} 0%, ${darkerColor} 100%)`);
+                document.querySelector('.color-picker-btn').classList.add('active');
+                document.getElementById('customColorPicker').value = savedColor;
+                document.getElementById('colorCode').value = savedColor;
+            } else {
+                setTheme(savedTheme);
+            }
         }
 
         // 카테고리 필터
@@ -990,6 +1278,7 @@
 
         // 페이지 로드 시 실행
         window.addEventListener('load', () => {
+            renderPresetColors();
             loadTheme();
             renderLinks();
             setupSearch();
